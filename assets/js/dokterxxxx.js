@@ -76,16 +76,6 @@ $("#modal_icd10").on("hidden.bs.modal", function () {
 
 console.log("Dokter JS loaded");
 
-/*
- * Auto-save Order Penunjang Dokter
- * Dipakai agar pilihan Lab/Radiologi langsung tersimpan ke DB saat checkbox dipilih/dibatalkan.
- * Dengan cara ini data tidak hilang saat Simpan SOAP melakukan reload panel pasien.
- */
-let penunjangAutoSaveTimer = null;
-let penunjangLastSignature = "";
-let penunjangIsSaving = false;
-let penunjangIsApplyingFromDb = false;
-
 $("#btn_mulaiperiksa").on("click", mulaiperiksa);
 $("#btn_simpansoap").on("click", simpansoap);
 $("#input_pencarian10").on("input", cariicd10);
@@ -98,8 +88,6 @@ $("#btn_resep").on("click", bukamodalresep);
 $("#input_cariobat").on("input", cariobat);
 $("#btn_selesai").on("click", bukamodalselesai);
 $("#input_caritindakan").on("input", caritindakan);
-// Tombol Simpan Penunjang dihilangkan. Order penunjang disimpan saat klik Selesai.
-// $("#btn_simpan_penunjang").on("click", simpanPenunjangDokter);
 
 $(document).on("click", "#patientList .patient-item", onPatientItemClick);
 
@@ -192,8 +180,7 @@ function loadPasien(dokter_id, poli_id, tanggal) {
           html += `
                     <div class="chat-user-group d-flex align-items-center m-0 patient-item"
                          data-episode-id="${p.episode_id}"
-                         data-pasien-id="${p.pasien_id}"
-                         data-poli-id="${p.poli_id}">
+                         data-pasien-id="${p.pasien_id}">
                         <div class="chat-users">
                             <div class="user-titles d-flex flex-column">
 
@@ -367,7 +354,6 @@ function loadDataPasien(episodeid, pasienid) {
       } else {
         var hasil = data.Responresult;
         console.log(hasil);
-        resetPenunjangDokter();
         adasoap = hasil.ada_soap == "Y" ? "Y" : "N";
 
         $(".idlokasi").val(hasil.lokasi_id);
@@ -455,7 +441,6 @@ function loadDataPasien(episodeid, pasienid) {
         loadicd10sek();
         loadicd9();
         loaditemharga();
-        loadPenunjangOrder();
 
         if (adasoap === "Y") {
           $("#cari_kode_icd10").prop("readonly", false);
@@ -1729,7 +1714,7 @@ function looptambahtindakan(layanid, tindakan, jumlah, harga, transalkes) {
   $("#pencarian_tindakan").val("");
 }
 
-function simpantindakanXXXX(event) {
+function simpantindakan(event) {
   event.preventDefault();
 
   let table = document.getElementById("listtindakan");
@@ -1790,146 +1775,6 @@ function simpantindakanXXXX(event) {
       }
     });
   }
-  return false;
-}
-
-function simpantindakan(event) {
-  if (event) {
-    event.preventDefault();
-  }
-
-  let table = document.getElementById("listtindakan");
-  let datatindakan = [];
-  let bolehSimpan = true;
-
-  if (!table) {
-    Swal.fire({
-      title: "Tabel tindakan tidak ditemukan",
-      icon: "error",
-      confirmButtonText: "OK",
-    });
-    return false;
-  }
-
-  for (let i = 0, row; (row = table.rows[i]); i++) {
-    let qtyInput = row.cells[2] ? row.cells[2].querySelector("input") : null;
-
-    let tindakan = {
-      layanid: row.cells[0] ? row.cells[0].innerText.trim() : "",
-      namalayan: row.cells[1] ? row.cells[1].innerText.trim() : "",
-      qty: qtyInput ? qtyInput.value : "1",
-      transalkes: row.cells[5] ? row.cells[5].innerText.trim() : "0",
-    };
-
-    if (!tindakan.layanid) {
-      continue;
-    }
-
-    datatindakan.push(tindakan);
-  }
-
-  if (!bolehSimpan) {
-    Swal.fire({
-      title: "Tidak bisa simpan",
-      icon: "error",
-      confirmButtonText: "OK",
-    });
-    return false;
-  }
-
-  $.ajax({
-    url: BASE_URL + "DokterController/simpantindakan",
-    method: "POST",
-    dataType: "JSON",
-    cache: false,
-    data: {
-      lokasiid: $(".idlokasi").val(),
-      episodeid: $(".idepisode").val(),
-      transid: $(".idtrans").val(),
-      pasienid: $(".idpasien").val(),
-      transco: $(".idtransco").val(),
-      tglpoli: $(".tanggalpoli").val(),
-      dokterid: $(".iddokter").val(),
-      rekananid: $(".idrekanan").val(),
-      createdby: $("#dokterId").text(),
-      datatindakan: datatindakan,
-    },
-    beforeSend: function () {
-      Swal.fire({
-        title: "Menyimpan tindakan...",
-        text: "Mohon tunggu sebentar.",
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading(),
-      });
-    },
-    success: function (response) {
-      Swal.close();
-
-      if (response.Responcode == "01" || response.Responcode == "00") {
-        /*
-         * Tutup modal tindakan.
-         * Support Bootstrap 4 dan Bootstrap 5.
-         */
-        const modalEl = document.getElementById("modal_tindakan");
-
-        if (modalEl) {
-          if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
-            let modalInstance = bootstrap.Modal.getInstance(modalEl);
-
-            if (!modalInstance) {
-              modalInstance = new bootstrap.Modal(modalEl);
-            }
-
-            modalInstance.hide();
-          } else {
-            $("#modal_tindakan").modal("hide");
-          }
-        }
-
-        /*
-         * Bersihkan sisa backdrop jika modal masih menyisakan overlay.
-         */
-        setTimeout(function () {
-          $(".modal-backdrop").remove();
-          $("body").removeClass("modal-open");
-          $("body").css("padding-right", "");
-        }, 300);
-
-        $("#listtindakan").html("");
-        $("#input_caritindakan").val("");
-        $("#pencarian_tindakan").val("");
-
-        loaditemharga();
-
-        Swal.fire({
-          title: "Tindakan Berhasil Disimpan",
-          text: response.Respondesc || "Data tindakan berhasil disimpan.",
-          icon: "success",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Gagal Simpan Tindakan",
-          text: response.Respondesc || "Tindakan gagal disimpan.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    },
-    error: function (xhr) {
-      Swal.close();
-
-      console.error(xhr.responseText);
-
-      Swal.fire({
-        title: "Error",
-        text: "Terjadi kesalahan server saat menyimpan tindakan.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
-    },
-  });
-
   return false;
 }
 
@@ -2806,364 +2651,6 @@ function simpansoapxxx() {
   return false;
 }
 
-/* ==========================================================
- * YKI TAHAP 2 - ORDER PENUNJANG DOKTER
- * Lab/Radiologi dipisahkan dari menu Tindakan.
- * ========================================================== */
-
-function formatRupiahPlain(angka) {
-  let n = parseFloat(angka || 0);
-  if (isNaN(n)) n = 0;
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(n);
-}
-
-function resetPenunjangDokter() {
-  penunjangIsApplyingFromDb = true;
-
-  $("#chkPenunjangLab, #chkPenunjangRad").prop("checked", false);
-  $("#penunjangLabBox, #penunjangRadBox").hide();
-  $(".penunjang-service-check").prop("checked", false);
-  $("#penunjangSelectedList").html(
-    '<li class="text-muted">Belum ada penunjang yang dipilih.</li>',
-  );
-  $("#penunjangTotalText").text("Rp 0");
-  updatePenunjangAutoSaveStatus("idle", "Belum ada order penunjang.");
-
-  penunjangLastSignature = "";
-  penunjangIsApplyingFromDb = false;
-}
-
-function collectPenunjangDokter() {
-  let items = [];
-
-  $(".penunjang-service-check:checked").each(function () {
-    items.push({
-      layan_id: $(this).data("layan-id"),
-      nama_layan: $(this).data("nama"),
-      kategori_kelompok: $(this).data("jenis"),
-      kategori_id: $(this).data("kategori-id"),
-      harga: parseFloat($(this).data("harga") || 0),
-      qty: 1,
-    });
-  });
-
-  return items;
-}
-
-function getPenunjangSignature(items) {
-  return (items || [])
-    .map(function (it) {
-      return `${it.layan_id}:${it.qty || 1}`;
-    })
-    .sort()
-    .join("|");
-}
-
-function ensurePenunjangAutoSaveStatusElement() {
-  if (!$("#penunjangAutoSaveStatus").length) {
-    $(".doctor-penunjang-note").before(
-      '<div id="penunjangAutoSaveStatus" class="penunjang-autosave-status is-idle">Belum ada order penunjang.</div>',
-    );
-  }
-}
-
-function updatePenunjangAutoSaveStatus(state, message) {
-  ensurePenunjangAutoSaveStatusElement();
-
-  const $el = $("#penunjangAutoSaveStatus");
-  $el
-    .removeClass("is-idle is-saving is-saved is-error")
-    .addClass("is-" + (state || "idle"));
-  $el.text(message || "");
-}
-
-function renderPenunjangSelectedSummary() {
-  const items = collectPenunjangDokter();
-  let html = "";
-  let total = 0;
-
-  if (!items.length) {
-    $("#penunjangSelectedList").html(
-      '<li class="text-muted">Belum ada penunjang yang dipilih.</li>',
-    );
-    $("#penunjangTotalText").text("Rp 0");
-    return;
-  }
-
-  items.forEach((it) => {
-    total += it.harga || 0;
-    html += `
-      <li class="d-flex justify-content-between align-items-start gap-2">
-        <span>
-          <strong>${it.kategori_kelompok}</strong> - ${it.nama_layan}
-          <small class="d-block text-muted">${it.layan_id}</small>
-        </span>
-        <span class="fw-semibold">${formatRupiahPlain(it.harga)}</span>
-      </li>`;
-  });
-
-  $("#penunjangSelectedList").html(html);
-  $("#penunjangTotalText").text(formatRupiahPlain(total));
-}
-
-function scheduleAutoSavePenunjangDokter() {
-  if (penunjangIsApplyingFromDb) {
-    return;
-  }
-
-  clearTimeout(penunjangAutoSaveTimer);
-  updatePenunjangAutoSaveStatus("saving", "Menunggu perubahan pilihan...");
-
-  penunjangAutoSaveTimer = setTimeout(function () {
-    simpanPenunjangDokter(null, { silent: true, force: true });
-  }, 500);
-}
-
-$(document).on("change", "#chkPenunjangLab", function () {
-  const checked = $(this).is(":checked");
-  $("#penunjangLabBox").toggle(checked);
-
-  // Sesuai alur: jika Lab dicheck, Papsmear otomatis terpilih.
-  $(".penunjang-service-check[data-jenis='LAB']").prop("checked", checked);
-
-  renderPenunjangSelectedSummary();
-  scheduleAutoSavePenunjangDokter();
-});
-
-$(document).on("change", "#chkPenunjangRad", function () {
-  const checked = $(this).is(":checked");
-  $("#penunjangRadBox").toggle(checked);
-
-  if (!checked) {
-    $(".penunjang-service-check[data-jenis='RAD']").prop("checked", false);
-  }
-
-  renderPenunjangSelectedSummary();
-  scheduleAutoSavePenunjangDokter();
-});
-
-$(document).on("change", ".penunjang-service-check", function () {
-  const jenis = $(this).data("jenis");
-
-  if (jenis === "LAB") {
-    const adaLab =
-      $(".penunjang-service-check[data-jenis='LAB']:checked").length > 0;
-    $("#chkPenunjangLab").prop("checked", adaLab);
-    $("#penunjangLabBox").toggle(adaLab);
-  }
-
-  if (jenis === "RAD") {
-    const adaRad =
-      $(".penunjang-service-check[data-jenis='RAD']:checked").length > 0;
-    $("#chkPenunjangRad").prop("checked", adaRad);
-    $("#penunjangRadBox").toggle(adaRad);
-  }
-
-  renderPenunjangSelectedSummary();
-  scheduleAutoSavePenunjangDokter();
-});
-
-function applyPenunjangOrder(items) {
-  penunjangIsApplyingFromDb = true;
-
-  $("#chkPenunjangLab, #chkPenunjangRad").prop("checked", false);
-  $("#penunjangLabBox, #penunjangRadBox").hide();
-  $(".penunjang-service-check").prop("checked", false);
-
-  if (!Array.isArray(items) || !items.length) {
-    renderPenunjangSelectedSummary();
-    penunjangLastSignature = "";
-    updatePenunjangAutoSaveStatus("idle", "Belum ada order penunjang.");
-    penunjangIsApplyingFromDb = false;
-    return;
-  }
-
-  items.forEach((it) => {
-    const selector = `.penunjang-service-check[data-layan-id='${it.layan_id}']`;
-    $(selector).prop("checked", true);
-  });
-
-  const adaLab =
-    $(".penunjang-service-check[data-jenis='LAB']:checked").length > 0;
-  const adaRad =
-    $(".penunjang-service-check[data-jenis='RAD']:checked").length > 0;
-
-  $("#chkPenunjangLab").prop("checked", adaLab);
-  $("#chkPenunjangRad").prop("checked", adaRad);
-  $("#penunjangLabBox").toggle(adaLab);
-  $("#penunjangRadBox").toggle(adaRad);
-
-  renderPenunjangSelectedSummary();
-  penunjangLastSignature = getPenunjangSignature(collectPenunjangDokter());
-  updatePenunjangAutoSaveStatus("saved", "Order penunjang sudah tersimpan.");
-  penunjangIsApplyingFromDb = false;
-}
-
-function loadPenunjangOrder() {
-  if (!$(".idepisode").val() || !$(".idpasien").val()) {
-    resetPenunjangDokter();
-    return;
-  }
-
-  $.ajax({
-    url: BASE_URL + "DokterController/loadPenunjangOrder",
-    type: "POST",
-    dataType: "JSON",
-    data: {
-      lokasiid: $(".idlokasi").val(),
-      episodeid: $(".idepisode").val(),
-      pasienid: $(".idpasien").val(),
-    },
-    success: function (res) {
-      if (res.Responcode === "00") {
-        applyPenunjangOrder(res.Responresult || []);
-      } else {
-        resetPenunjangDokter();
-      }
-    },
-    error: function () {
-      resetPenunjangDokter();
-    },
-  });
-}
-
-function simpanPenunjangDokter(event, options) {
-  if (event) event.preventDefault();
-
-  options = options || {};
-  const silent = options.silent === true;
-  const force = options.force === true;
-
-  if (!$(".idepisode").val() || !$(".idpasien").val()) {
-    updatePenunjangAutoSaveStatus(
-      "error",
-      "Pilih pasien terlebih dahulu sebelum memilih penunjang.",
-    );
-
-    if (!silent) {
-      Swal.fire({
-        title: "Pasien belum dipilih",
-        text: "Pilih pasien terlebih dahulu sebelum memilih penunjang.",
-        icon: "warning",
-        confirmButtonText: "OK",
-      });
-    }
-    return false;
-  }
-
-  const items = collectPenunjangDokter();
-  const signature = getPenunjangSignature(items);
-
-  if (!force && signature === penunjangLastSignature) {
-    return false;
-  }
-
-  $.ajax({
-    url: BASE_URL + "DokterController/simpanPenunjangDokter",
-    method: "POST",
-    dataType: "JSON",
-    data: {
-      lokasiid: $(".idlokasi").val(),
-      episodeid: $(".idepisode").val(),
-      transid: $(".idtrans").val(),
-      pasienid: $(".idpasien").val(),
-      transco: $(".idtransco").val(),
-      poliid: $(".idpoli").val(),
-      dokterid: $(".iddokter").val(),
-      rekananid: $(".idrekanan").val(),
-      tanggal: $(".tanggalpoli").val(),
-      createdby: $("#dokterId").text(),
-      penunjang_order: JSON.stringify(items),
-    },
-    beforeSend: function () {
-      penunjangIsSaving = true;
-      updatePenunjangAutoSaveStatus(
-        "saving",
-        items.length
-          ? "Menyimpan order penunjang otomatis..."
-          : "Menghapus order penunjang yang belum dibayar...",
-      );
-
-      if (!silent) {
-        Swal.fire({
-          title: "Menyimpan Penunjang...",
-          text: "Mohon tunggu sebentar.",
-          allowOutsideClick: false,
-          didOpen: () => Swal.showLoading(),
-        });
-      }
-    },
-    success: function (res) {
-      penunjangIsSaving = false;
-      if (!silent) Swal.close();
-
-      if (res.Responcode === "00") {
-        penunjangLastSignature = signature;
-
-        if (res.Responresult && res.Responresult.trans_co) {
-          $(".idtransco").val(res.Responresult.trans_co);
-        }
-
-        updatePenunjangAutoSaveStatus(
-          "saved",
-          items.length
-            ? "Order penunjang tersimpan otomatis."
-            : "Order penunjang dibatalkan / dinonaktifkan.",
-        );
-
-        loaditemharga();
-
-        if (!silent) {
-          Swal.fire({
-            title: "Order Penunjang Tersimpan",
-            text: res.Respondesc || "Order penunjang berhasil disimpan.",
-            icon: "success",
-            confirmButtonText: "OK",
-          });
-        }
-      } else {
-        updatePenunjangAutoSaveStatus(
-          "error",
-          res.Respondesc || "Order penunjang gagal disimpan.",
-        );
-
-        if (!silent) {
-          Swal.fire({
-            title: "Gagal Menyimpan",
-            text: res.Respondesc || "Order penunjang gagal disimpan.",
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-        }
-      }
-    },
-    error: function (xhr) {
-      penunjangIsSaving = false;
-      if (!silent) Swal.close();
-
-      updatePenunjangAutoSaveStatus(
-        "error",
-        "Gagal auto-save order penunjang. Cek koneksi / server.",
-      );
-
-      if (!silent) {
-        Swal.fire({
-          title: "Kesalahan Server",
-          text: xhr.responseText || "Tidak dapat menyimpan order penunjang.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    },
-  });
-
-  return false;
-}
-
 function simpansoap() {
   if (
     $.trim($("#subject").val()) != "" &&
@@ -3189,7 +2676,6 @@ function simpansoap() {
         soap_a: $("#assesment").val(),
         soap_p: $("#planning").val(),
         createdby: $("#dokterId").text(),
-        rekananid: $(".idrekanan").val(),
       },
       beforeSend: function () {
         Swal.fire({

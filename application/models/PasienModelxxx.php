@@ -469,6 +469,3 @@ class PasienModel extends CI_Model
         return $this->db->query($query)->result_array();
     }
 }
-
-
-/* Catatan revisi: tidak ada perubahan wajib pada PasienModel untuk alur baru asesmen perawat. */

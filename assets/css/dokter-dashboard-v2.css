@@ -1,0 +1,372 @@
+/* ==========================================================
+   Dokter Dashboard YKI Tahap 2
+   Scope khusus agar tidak mengganggu halaman lain.
+   ========================================================== */
+
+.dokter-dashboard-v2 {
+    background: #f6f8fc;
+}
+
+.dokter-dashboard-v2 .page-header {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 18px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.dokter-dashboard-v2 .btn {
+    border-radius: 10px;
+}
+
+.dokter-dashboard-v2 textarea.form-control,
+.dokter-dashboard-v2 input.form-control,
+.dokter-dashboard-v2 select.form-select {
+    border-radius: 12px;
+    border-color: #dbe2ef;
+}
+
+.dokter-dashboard-v2 textarea.form-control:focus,
+.dokter-dashboard-v2 input.form-control:focus,
+.dokter-dashboard-v2 select.form-select:focus {
+    border-color: #6d28d9;
+    box-shadow: 0 0 0 0.2rem rgba(109, 40, 217, 0.12);
+}
+
+.doctor-penunjang-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid #dbe7ff;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 14px 35px rgba(30, 64, 175, 0.08);
+}
+
+.doctor-penunjang-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    border-bottom: 1px dashed #cbd5e1;
+    padding-bottom: 12px;
+}
+
+.doctor-penunjang-kicker {
+    color: #6d28d9;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.doctor-penunjang-head h6 {
+    color: #0f172a;
+    font-weight: 800;
+    font-size: 17px;
+}
+
+.doctor-penunjang-head p {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.doctor-penunjang-badge {
+    background: #ede9fe;
+    color: #5b21b6;
+    border: 1px solid #ddd6fe;
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.doctor-choice-card {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    padding: 13px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    border-radius: 16px;
+    transition: 0.18s ease;
+    margin-bottom: 0;
+}
+
+.doctor-choice-card:hover {
+    transform: translateY(-1px);
+    border-color: #a78bfa;
+    box-shadow: 0 10px 24px rgba(109, 40, 217, 0.08);
+}
+
+.doctor-choice-card input {
+    width: 18px;
+    height: 18px;
+    accent-color: #6d28d9;
+}
+
+.doctor-choice-card strong {
+    display: block;
+    color: #111827;
+    font-size: 14px;
+}
+
+.doctor-choice-card small {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.doctor-choice-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-soft-success {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.bg-soft-primary {
+    background: #e0e7ff;
+    color: #4338ca;
+}
+
+.doctor-service-box {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 13px;
+}
+
+.doctor-service-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #334155;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.doctor-service-item {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 9px 8px;
+    border-radius: 12px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.doctor-service-item:hover {
+    background: #f8fafc;
+}
+
+.doctor-service-item input {
+    accent-color: #6d28d9;
+}
+
+.doctor-service-item strong {
+    display: block;
+    font-size: 13px;
+    color: #111827;
+}
+
+.doctor-service-item small {
+    display: block;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.doctor-service-item em {
+    color: #0f766e;
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.doctor-penunjang-summary {
+    background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%) !important;
+    color: #1f2937 !important;
+    border: 1px solid #dbe7ff !important;
+    border-radius: 18px !important;
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08) !important;
+    padding: 16px !important;
+    min-height: 100%;
+}
+
+.doctor-penunjang-summary .summary-title {
+    color: #334155 !important;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.doctor-penunjang-summary ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.doctor-penunjang-summary li {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #334155 !important;
+    border-radius: 12px;
+    padding: 9px 10px;
+    margin-bottom: 8px;
+}
+
+.doctor-penunjang-summary .text-muted {
+    color: #cbd5e1 !important;
+}
+
+.doctor-penunjang-summary small {
+    color: #94a3b8 !important;
+}
+
+.summary-total {
+    background: #eef6ff !important;
+    border: 1px solid #d7eaff !important;
+    border-radius: 14px !important;
+    padding: 10px 12px !important;
+    color: #334155 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.summary-total span {
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+
+.doctor-penunjang-note {
+    background: #f0f9ff;
+    border: 1px dashed #7dd3fc;
+    color: #075985;
+    border-radius: 12px;
+    padding: 9px 10px;
+    font-size: 12px;
+    line-height: 1.35;
+    margin-top: 10px;
+}
+
+
+.summary-total strong {
+    color: #059669 !important;
+}
+
+.dokter-action-modal .dokter-modal-content {
+    border: 0;
+    border-radius: 22px;
+    overflow: hidden;
+    height: 820px;
+    box-shadow: 0 30px 90px rgba(15, 23, 42, 0.25);
+}
+
+.dokter-action-modal .dokter-modal-header {
+    background: linear-gradient(135deg, #4c1d95, #2563eb);
+    color: #ffffff;
+    padding: 16px 20px;
+}
+
+.dokter-action-modal .dokter-modal-header h5 {
+    font-weight: 800;
+}
+
+.dokter-action-modal .dokter-modal-header small {
+    color: #ddd6fe;
+}
+
+.dokter-action-modal .dokter-modal-body {
+    background: #f8fafc;
+    overflow-y: auto;
+    padding: 18px;
+}
+
+.dokter-action-modal .dokter-modal-footer {
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+}
+
+.doctor-patient-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.doctor-patient-strip div {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 9px 12px;
+}
+
+.doctor-patient-strip span {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.doctor-patient-strip input {
+    width: 100%;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.doctor-inline-form {
+    display: flex;
+    gap: 12px;
+    align-items: end;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 14px;
+}
+
+.dokter-table-wrap {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.dokter-table-wrap thead {
+    background: #eef2ff;
+    color: #1e1b4b;
+}
+
+@media (max-width: 992px) {
+    .doctor-patient-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .doctor-inline-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 576px) {
+    .doctor-patient-strip {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+

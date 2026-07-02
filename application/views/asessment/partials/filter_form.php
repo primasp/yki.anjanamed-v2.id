@@ -1,52 +1,60 @@
 <?php
-// Jika suffix belum diset, default ke "Belum"
+// application/views/asessment/partials/filter_form.php
 if (!isset($suffix)) $suffix = 'Belum';
 
-// Tanggal default = hari ini (format HTML5 date => Y-m-d)
 $today = date('Y-m-d');
-// return var_dump($today);
-// die;
 ?>
 
-<div class="row mb-3">
-    <div class="col-md-3">
-        <label class="form-label fw-bold">Tanggal Asesmen:</label>
-        <input type="date" class="form-control filterTanggal" id="filterTanggalAses<?= $suffix ?>" value="<?= $today ?>">
-    </div>
-
-    <div class="col-md-3">
-        <label class="form-label fw-bold">Pilih Jenis Layanan:</label>
-        <select class="form-select" id="jenisLayanan<?= $suffix ?>">
-            <!-- <option value="">==Pilih Jenis Layanan==</option> -->
-            <option value="SEMUA">Semua</option>
-            <option value="PENUNJANG">Penunjang (Lab / Radiologi)</option>
-            <option value="POLIKLINIK">Poliklinik</option>
-        </select>
-    </div>
-
-    <div class="col-md-3">
-        <label class="form-label fw-bold">Cari Pasien:</label>
-        <input type="text" class="form-control filterSearch" id="filterSearch<?= $suffix ?>" placeholder="Nama pasien / No. RM">
-    </div>
-</div>
-
-<!-- Filter tambahan bila POLIKLINIK -->
-<div id="filterPoliklinik<?= $suffix ?>" style="display:none;">
-    <div class="row g-2 mb-3">
-        <div class="col-md-4">
-            <label class="form-label">Nama Poliklinik:</label>
-            <select class="form-select poliSelect" id="poliSelect<?= $suffix ?>">
-                <option value="">-- Pilih Poliklinik --</option>
-                <?php foreach ($poli as $p) : ?>
-                    <option value="<?= $p->poli_id ?>"><?= $p->keterangan ?></option>
-                <?php endforeach; ?>
-            </select>
+<div class="assessment-filter-card">
+    <div class="row g-3 align-items-end">
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <label class="form-label">Tanggal Asesmen</label>
+            <div class="assessment-input-icon">
+                <i class="feather-calendar"></i>
+                <input type="date" class="form-control filterTanggal" id="filterTanggalAses<?= $suffix ?>" value="<?= $today ?>">
+            </div>
         </div>
-        <div class="col-md-4">
-            <label class="form-label">Nama Dokter:</label>
-            <select class="form-select dokterSelect" id="dokterSelect<?= $suffix ?>">
-                <option value="">-- Pilih Dokter --</option>
+
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <label class="form-label">Jenis Layanan</label>
+            <select class="form-select" id="jenisLayanan<?= $suffix ?>">
+                <option value="SEMUA">Semua Poliklinik</option>
+                <option value="POLIKLINIK">Filter Poliklinik</option>
             </select>
+            <small class="text-muted d-block mt-1">
+                Penunjang Lab/Radiologi tidak tampil di asesmen perawat.
+            </small>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-md-12">
+            <label class="form-label">Cari Pasien</label>
+            <div class="assessment-input-icon">
+                <i class="feather-search"></i>
+                <input type="text" class="form-control filterSearch" id="filterSearch<?= $suffix ?>" placeholder="Cari nama pasien / No. RM">
+            </div>
+        </div>
+    </div>
+
+    <div id="filterPoliklinik<?= $suffix ?>" class="assessment-subfilter" style="display:none;">
+        <div class="row g-3">
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <label class="form-label">Nama Poliklinik</label>
+                <select class="form-select poliSelect" id="poliSelect<?= $suffix ?>">
+                    <option value="">-- Semua Poliklinik --</option>
+                    <?php foreach ($poli as $p) : ?>
+                        <option value="<?= htmlspecialchars($p->poli_id, ENT_QUOTES, 'UTF-8') ?>">
+                            <?= htmlspecialchars($p->keterangan, ENT_QUOTES, 'UTF-8') ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="col-xl-4 col-lg-6 col-md-6">
+                <label class="form-label">Nama Dokter</label>
+                <select class="form-select dokterSelect" id="dokterSelect<?= $suffix ?>">
+                    <option value="">-- Semua Dokter --</option>
+                </select>
+            </div>
         </div>
     </div>
 </div>

@@ -79,7 +79,7 @@ if (!empty($paliatif['mental_state'])) {
     </div>
 <?php endif; ?>
 
-<div class="content asesmen-modern-form">
+<div class="content">
 
     <!-- Page Header -->
     <div class="page-header">

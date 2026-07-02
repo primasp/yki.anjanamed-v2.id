@@ -1,0 +1,559 @@
+/* =========================================================
+   Registrasi Layanan YKI Tahap 2
+   Scope CSS dibuat khusus agar tidak mengganggu halaman lain.
+   ========================================================= */
+
+.registrasi-yki-v3 {
+    background: #f6f3fb;
+    min-height: calc(100vh - 60px);
+    padding-bottom: 32px;
+}
+
+.registrasi-yki-v3 .yki-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.registrasi-yki-v3 .yki-breadcrumb {
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.registrasi-yki-v3 .yki-page-header h3 {
+    margin: 0;
+    color: #15112b;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.registrasi-yki-v3 .yki-page-header p {
+    margin: 6px 0 0;
+    color: #7b728f;
+    font-size: 13px;
+}
+
+.registrasi-yki-v3 .yki-header-badge {
+    min-width: 110px;
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #4b00b5, #7c3aed);
+    color: #fff;
+    box-shadow: 0 16px 30px rgba(76, 29, 149, 0.18);
+    text-align: center;
+}
+
+.registrasi-yki-v3 .yki-header-badge span,
+.registrasi-yki-v3 .yki-header-badge strong {
+    display: block;
+    line-height: 1.1;
+}
+
+.registrasi-yki-v3 .yki-header-badge span {
+    font-size: 12px;
+    opacity: 0.86;
+}
+
+.registrasi-yki-v3 .yki-header-badge strong {
+    margin-top: 3px;
+    font-size: 17px;
+}
+
+.registrasi-yki-v3 .yki-card,
+.registrasi-yki-v3 .yki-sticky-actions {
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(124, 58, 237, 0.08);
+    border-radius: 22px;
+    box-shadow: 0 18px 38px rgba(32, 22, 64, 0.07);
+}
+
+.registrasi-yki-v3 .yki-card {
+    padding: 20px;
+}
+
+.registrasi-yki-v3 .yki-section-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #eee8f8;
+}
+
+.registrasi-yki-v3 .yki-section-head-border {
+    border-bottom: 0;
+    padding-bottom: 4px;
+}
+
+.registrasi-yki-v3 .yki-section-kicker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 22px;
+    margin-bottom: 6px;
+    border-radius: 999px;
+    background: #efe7ff;
+    color: #5b21b6;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.registrasi-yki-v3 .yki-section-head h4 {
+    margin: 0;
+    color: #17112f;
+    font-weight: 800;
+    font-size: 17px;
+}
+
+.registrasi-yki-v3 .yki-section-head p {
+    margin: 5px 0 0;
+    color: #7b728f;
+    font-size: 12.5px;
+}
+
+.registrasi-yki-v3 .yki-field {
+    position: relative;
+    margin-bottom: 4px;
+}
+
+.registrasi-yki-v3 .yki-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #21193b;
+    font-size: 12.5px;
+    font-weight: 800;
+}
+
+.registrasi-yki-v3 .yki-field label span {
+    color: #ef4444;
+}
+
+.registrasi-yki-v3 .form-control,
+.registrasi-yki-v3 .form-select,
+.registrasi-yki-v3 .select2-container--default .select2-selection--single {
+    min-height: 44px;
+    border: 1px solid #e4dbf6 !important;
+    border-radius: 12px !important;
+    background: #fff;
+    color: #201936;
+    font-size: 13px;
+    box-shadow: none !important;
+}
+
+.registrasi-yki-v3 .form-control:focus,
+.registrasi-yki-v3 .form-select:focus {
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.10) !important;
+}
+
+.registrasi-yki-v3 input:disabled {
+    background: #f1eef7 !important;
+    color: #5b546c;
+}
+
+.registrasi-yki-v3 .yki-btn-light,
+.registrasi-yki-v3 .yki-btn-secondary,
+.registrasi-yki-v3 .yki-btn-refresh {
+    border: 0;
+    border-radius: 12px;
+    font-weight: 800;
+}
+
+.registrasi-yki-v3 .yki-btn-light {
+    background: #f1e9ff;
+    color: #5b21b6;
+    padding: 9px 13px;
+    font-size: 12px;
+}
+
+.registrasi-yki-v3 .yki-btn-icon {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 14px;
+    background: #5b00c9;
+    color: #fff;
+    box-shadow: 0 12px 24px rgba(91, 0, 201, 0.18);
+}
+
+.registrasi-yki-v3 .yki-btn-primary {
+    min-height: 43px;
+    border: 0;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #4b00b5, #6d28d9);
+    color: #fff;
+    font-weight: 900;
+    box-shadow: 0 14px 24px rgba(91, 0, 201, 0.2);
+}
+
+.registrasi-yki-v3 .yki-btn-secondary {
+    min-height: 42px;
+    background: #68707c;
+    color: #fff;
+}
+
+.registrasi-yki-v3 .yki-visit-switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.registrasi-yki-v3 .yki-radio-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 15px;
+    border: 1px solid #e7def7;
+    border-radius: 18px;
+    background: #fff;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.registrasi-yki-v3 .yki-radio-card:hover,
+.registrasi-yki-v3 .yki-radio-card.active {
+    border-color: #7c3aed;
+    box-shadow: 0 14px 28px rgba(124, 58, 237, 0.10);
+}
+
+.registrasi-yki-v3 .yki-radio-card input {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+}
+
+.registrasi-yki-v3 .yki-radio-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 15px;
+    background: #f1e9ff;
+    color: #5b21b6;
+    font-size: 18px;
+}
+
+.registrasi-yki-v3 .yki-radio-card strong,
+.registrasi-yki-v3 .yki-radio-card small {
+    display: block;
+}
+
+.registrasi-yki-v3 .yki-radio-card strong {
+    color: #201936;
+    font-size: 14px;
+}
+
+.registrasi-yki-v3 .yki-radio-card small {
+    margin-top: 4px;
+    color: #7b728f;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.registrasi-yki-v3 .yki-fieldset {
+    padding: 18px;
+    border: 1px solid #e6dcf7;
+    border-radius: 18px;
+    background: #fbfaff;
+}
+
+.registrasi-yki-v3 .yki-fieldset legend {
+    float: none;
+    width: auto;
+    margin: 0 0 10px;
+    padding: 0 8px;
+    color: #5b21b6;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.registrasi-yki-v3 .yki-alert-info {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    border: 1px solid #bfdbfe;
+    border-radius: 14px;
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-size: 12.5px;
+}
+
+.registrasi-yki-v3 .yki-mini-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 13px;
+}
+
+.registrasi-yki-v3 .yki-mini-head strong,
+.registrasi-yki-v3 .yki-mini-head small {
+    display: block;
+}
+
+.registrasi-yki-v3 .yki-mini-head strong {
+    color: #17112f;
+    font-size: 15px;
+}
+
+.registrasi-yki-v3 .yki-mini-head small {
+    color: #7b728f;
+    font-size: 12px;
+}
+
+.registrasi-yki-v3 .yki-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.registrasi-yki-v3 .yki-item-row {
+    padding: 14px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #eee8f8;
+}
+
+.registrasi-yki-v3 .yki-price-box {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    border-radius: 12px;
+    background: #f8f5ff;
+    color: #4b00b5;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.registrasi-yki-v3 .yki-btn-add {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 13px;
+    background: #00c878;
+    color: #fff;
+}
+
+.registrasi-yki-v3 .yki-btn-delete {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 13px;
+    background: #ef4444;
+    color: #fff;
+}
+
+.registrasi-yki-v3 .yki-history-card {
+    height: 100%;
+    min-height: 360px;
+    border: 1px solid #e6dcf7;
+    border-radius: 18px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.registrasi-yki-v3 .yki-history-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border-bottom: 1px solid #eee8f8;
+    background: linear-gradient(135deg, #fbfaff, #f1e9ff);
+}
+
+.registrasi-yki-v3 .yki-history-head strong,
+.registrasi-yki-v3 .yki-history-head small {
+    display: block;
+}
+
+.registrasi-yki-v3 .yki-history-head strong {
+    color: #201936;
+    font-size: 14px;
+}
+
+.registrasi-yki-v3 .yki-history-head small {
+    color: #7b728f;
+    font-size: 11.5px;
+}
+
+.registrasi-yki-v3 .yki-btn-refresh {
+    width: 36px;
+    height: 36px;
+    background: #fff;
+    color: #5b21b6;
+}
+
+.registrasi-yki-v3 .yki-history-body {
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 14px;
+}
+
+.registrasi-yki-v3 .yki-history-item {
+    padding: 12px;
+    border: 1px solid #eee8f8;
+    border-radius: 14px;
+    background: #fff;
+    margin-bottom: 10px;
+}
+
+.registrasi-yki-v3 .yki-history-item:last-child {
+    margin-bottom: 0;
+}
+
+.registrasi-yki-v3 .yki-history-item-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 7px;
+}
+
+.registrasi-yki-v3 .yki-history-date {
+    color: #201936;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.registrasi-yki-v3 .yki-provider-badge {
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 900;
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.registrasi-yki-v3 .yki-provider-badge.program {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.registrasi-yki-v3 .yki-provider-badge.umum {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.registrasi-yki-v3 .yki-history-item p {
+    margin: 0;
+    color: #4c455f;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.registrasi-yki-v3 .yki-history-item .layanan {
+    color: #201936;
+}
+
+.registrasi-yki-v3 .yki-empty-state {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #8b82a1;
+}
+
+.registrasi-yki-v3 .yki-empty-state i {
+    margin-bottom: 10px;
+    font-size: 30px;
+    color: #c4b5fd;
+}
+
+.registrasi-yki-v3 .yki-empty-state p {
+    margin: 0;
+    font-size: 12.5px;
+}
+
+.registrasi-yki-v3 .yki-sticky-actions {
+    position: sticky;
+    top: 86px;
+    padding: 14px;
+}
+
+.registrasi-yki-v3 .yki-summary-box {
+    padding: 12px;
+    border-radius: 15px;
+    background: #fbfaff;
+    border: 1px solid #eee8f8;
+}
+
+.registrasi-yki-v3 .yki-summary-box span,
+.registrasi-yki-v3 .yki-summary-box strong {
+    display: block;
+}
+
+.registrasi-yki-v3 .yki-summary-box span {
+    color: #7b728f;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.registrasi-yki-v3 .yki-summary-box strong {
+    margin-top: 3px;
+    color: #201936;
+    font-size: 14px;
+}
+
+.registrasi-yki-v3 .yki-progress {
+    height: 7px;
+    border-radius: 999px;
+    background: #ede9fe;
+    overflow: hidden;
+}
+
+.registrasi-yki-v3 .yki-progress span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4b00b5, #7c3aed);
+    transition: width 0.25s ease;
+}
+
+.registrasi-yki-v3 .yki-summary-note {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 15px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11.5px;
+    line-height: 1.45;
+}
+
+.registrasi-yki-v3 .yki-summary-note p {
+    margin: 0;
+}
+
+@media (max-width: 991px) {
+    .registrasi-yki-v3 .yki-visit-switch {
+        grid-template-columns: 1fr;
+    }
+
+    .registrasi-yki-v3 .yki-sticky-actions {
+        position: static;
+    }
+}
+
+.registrasi-yki-v3 .yki-alert-info.yki-alert-warning {
+    border-color: #fde68a;
+    background: #fffbeb;
+    color: #92400e;
+}

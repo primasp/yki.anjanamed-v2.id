@@ -6,7 +6,7 @@ if (!isset($title)) $title = 'Edit Pengkajian Awal Pasien Rawat Jalan (Umum)';
 // die;
 ?>
 
-<div class="content asesmen-modern-form">
+<div class="content">
 
     <!-- Page Header -->
     <div class="page-header">

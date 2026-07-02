@@ -1726,45 +1726,19 @@ class DokterModel extends CI_Model
                 'last_updated_date' => $updated_at
             ]);
 
-        /*
-         * Nonaktifkan data lanjutan Lab/Rad hanya untuk order yang BELUM dibayar.
-         * Jika sudah dibayar, jangan disentuh agar histori dan hasil penunjang tidak hilang.
-         */
-        $sqlLab = "UPDATE pc01_co_lab_dt d
-            SET show_item = '0'
-            WHERE d.episode_id = ?
-              AND d.pasien_id = ?
-              AND d.test_id IN ({$in})
-              AND COALESCE(d.show_item::text, '1') = '1'
-              AND EXISTS (
-                    SELECT 1
-                    FROM pc01_keu_transaksi_hd h
-                    WHERE h.episode_id = d.episode_id
-                      AND h.pasien_id = d.pasien_id
-                      AND h.trans_id = d.trans_id
-                      AND h.jenis_tr = '004'
-                      AND h.bayar_id IS NULL
-                      AND h.tgl_lunas IS NULL
-              )";
-        $this->db->query($sqlLab, [$episode_id, $pasien_id]);
+        $this->db->where('episode_id', $episode_id);
+        $this->db->where('pasien_id', $pasien_id);
+        $this->db->where_in('test_id', $this->allowedPenunjangDokterIds());
+        $this->db->update('pc01_co_lab_dt', [
+            'show_item' => '0'
+        ]);
 
-        $sqlRad = "UPDATE pc01_co_rad_dt d
-            SET show_item = '0'
-            WHERE d.episode_id = ?
-              AND d.pasien_id = ?
-              AND d.test_id IN ({$in})
-              AND COALESCE(d.show_item::text, '1') = '1'
-              AND EXISTS (
-                    SELECT 1
-                    FROM pc01_keu_transaksi_hd h
-                    WHERE h.episode_id = d.episode_id
-                      AND h.pasien_id = d.pasien_id
-                      AND h.trans_id = d.trans_id
-                      AND h.jenis_tr = '005'
-                      AND h.bayar_id IS NULL
-                      AND h.tgl_lunas IS NULL
-              )";
-        $this->db->query($sqlRad, [$episode_id, $pasien_id]);
+        $this->db->where('episode_id', $episode_id);
+        $this->db->where('pasien_id', $pasien_id);
+        $this->db->where_in('test_id', $this->allowedPenunjangDokterIds());
+        $this->db->update('pc01_co_rad_dt', [
+            'show_item' => '0'
+        ]);
 
         return true;
     }

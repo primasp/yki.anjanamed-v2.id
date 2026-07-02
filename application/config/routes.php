@@ -84,6 +84,13 @@ $route['LabController/pap-form-save'] = 'LabController/pap_form_save';
 // LabDokterController/pap-form-save
 
 
+$route['Kasir-Umum']                = 'KasirUmumController/index';
+$route['Kasir-Umum/List']           = 'KasirUmumController/ajax_list_unpaid';
+$route['Kasir-Umum/Billing']        = 'KasirUmumController/ajax_load_billing';
+$route['Kasir-Umum/Proses-Bayar']   = 'KasirUmumController/ajax_proses_bayar';
+$route['Kasir-Umum/Cetak-Kwitansi'] = 'KasirUmumController/cetak_kwitansi';
+
+
 
 $route['Lab-Doctor'] = 'LabDoctorController';
 $route['LabDoctorController/pap-list'] = 'LabDoctorController/pap_list';

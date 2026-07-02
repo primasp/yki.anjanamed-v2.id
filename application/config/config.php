@@ -18,15 +18,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 switch ($_SERVER['HTTP_HOST']) {
 
     case 'yki.anjanamed.id':
-        $baseurl = 'https://yki.anjanamed.id/';
+        $baseurl = 'https://yki.anjanamed-v2.id/';
         break;
 
     case 'localhost':
-        $baseurl = 'http://localhost/_project/anjana/yki.anjanamed.id/';
+        $baseurl = 'http://localhost/_project/anjana/yki.anjanamed-v2.id/';
         break;
 
     default:
-        $baseurl = 'http://localhost/_project/anjana/yki.anjanamed.id/';
+        $baseurl = 'http://localhost/_project/anjana/yki.anjanamed-v2.id/';
         break;
 }
 

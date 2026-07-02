@@ -16,7 +16,7 @@ class RajalController extends CI_Controller
         $this->load->model('RajalModel', 'rm');
     }
 
-    public function registLayan($pasien_id = null)
+    public function registLayanxxx($pasien_id = null)
     {
         $user_id = $this->session->userdata('user_id_pc');
 
@@ -38,6 +38,44 @@ class RajalController extends CI_Controller
         $this->load->view('templates/sidebar');
         $this->load->view('Rajal/registPoli_v', $data);
         $this->load->view('modals/list_rj_modal'); // <--- Tambahkan ini
+        $this->load->view('templates/footer');
+    }
+
+    public function registLayan($pasien_id = null)
+    {
+        $user_id = $this->session->userdata('user_id_pc');
+
+        $data['user']   = $this->um->get_user_by_id($user_id);
+        $data['script'] = 'js/regist-poli.js';
+        $data['page_css']    = 'css/regist-poli.css';
+
+        // return var_dump($data);
+        // die;
+
+
+        // return var_dump(base_url('assets/css/regist-poli.css?v=' . time()));
+        // die;
+
+
+        if ($pasien_id) {
+            $data['pasien'] = $this->rm->get_pasien_v2($pasien_id, 'id');
+            $data['pasien'] = !empty($data['pasien']) ? $data['pasien'][0] : null;
+        } else {
+            $data['pasien'] = null;
+        }
+
+        // Alur baru: penunjang rujukan hanya papsmear dan hanya UMUM.
+        $data['lab_items'] = $this->rm->get_lab_items_papsmear_rujukan('UMUM');
+        $data['rad_items'] = [];
+
+        $this->load->view('templates/header', $data);
+
+        // echo '<pre>';
+        // print_r($data);
+        // die;
+        $this->load->view('templates/sidebar');
+        $this->load->view('Rajal/registPoli_v', $data);
+        $this->load->view('modals/list_rj_modal');
         $this->load->view('templates/footer');
     }
 
@@ -136,7 +174,7 @@ class RajalController extends CI_Controller
         }
     }
 
-    public function check_poli()
+    public function check_polixxxx()
     {
         $pembiayaan = $this->input->post('pembiayaan');
         $jenis_kunjungan = $this->input->post('jenis_kunjungan');
@@ -144,6 +182,48 @@ class RajalController extends CI_Controller
         $data = $this->rm->getPoliByPembiayaan($pembiayaan);
         echo json_encode($data);
     }
+
+
+    public function check_poli()
+    {
+        $this->output->set_content_type('application/json');
+
+        $pembiayaan      = $this->input->post('pembiayaan', true);
+        $jenis_kunjungan = $this->input->post('jenis_kunjungan', true);
+
+        $data = $this->rm->getPoliByPembiayaanV2($pembiayaan, $jenis_kunjungan);
+        echo json_encode($data);
+    }
+
+
+    /* ==========================================================
+    * 3. ADD endpoint history layanan pasien
+    *    Route AJAX: RajalController/get_history_layanan_pasien
+    * ========================================================== */
+    public function get_history_layanan_pasien()
+    {
+        $this->output->set_content_type('application/json');
+
+        $pasien_id = $this->input->post('pasien_id', true);
+
+        if (empty($pasien_id)) {
+            echo json_encode([
+                'status'  => false,
+                'message' => 'Pasien belum dipilih.',
+                'data'    => []
+            ]);
+            return;
+        }
+
+        $history = $this->rm->get_history_layanan_pasien($pasien_id, 8);
+
+        echo json_encode([
+            'status' => true,
+            'data'   => $history
+        ]);
+    }
+
+
 
     public function hari_indo($day)
     {
@@ -219,6 +299,34 @@ class RajalController extends CI_Controller
         $jenis_kunjungan = $this->input->post('jenis_kunjungan'); // 1 = Poliklinik, 2 = Penunjang
         $pasien_id = $this->input->post('pasien_id');
         $pembiayaan = $this->input->post('pembiayaan');
+
+
+        if ($jenis_kunjungan == '2') {
+
+            // Penunjang hanya untuk pasien UMUM
+            if ($pembiayaan != 'UMUM') {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Pemeriksaan Penunjang (Rujukan) hanya dapat digunakan untuk Provider Umum.'
+                ]);
+                return;
+            }
+
+            // Radiologi belum digunakan
+            $_POST['rad_item'] = [];
+            $_POST['rad_qty']  = [];
+
+            $lab_item = $this->input->post('lab_item');
+
+            if (empty(array_filter((array)$lab_item))) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Silakan pilih pelayanan Papsmear (Rujukan).'
+                ]);
+                return;
+            }
+        }
+
         $user_id = $this->session->userdata('user_id_pc');
 
         if (empty($pasien_id)) {
@@ -228,6 +336,19 @@ class RajalController extends CI_Controller
 
         // Ambil nominal pembayaran dari frontend
         $bayar_nanti = $this->input->post('bayar_nanti') ?? 0;
+
+        // ==========================================================
+        // SINKRON REGISTRASI-KASIR YKI
+        // Penunjang rujukan UMUM (pendaftaran + Papsmear Preparat)
+        // wajib dibayar di awal registrasi, sehingga header transaksi
+        // langsung memiliki bayar_id dan tidak muncul lagi di Kasir.
+        // Untuk POLI UMUM, bayar_nanti tetap boleh dipilih; bila bayar
+        // nanti, header transaksi dibiarkan bayar_id NULL agar ditarik Kasir.
+        // ==========================================================
+        if ((string)$jenis_kunjungan === '2' && strtoupper((string)$pembiayaan) === 'UMUM') {
+            $bayar_nanti = 0;
+        }
+
         $metode_bayar   = $this->input->post('metode_bayar') ?? 'TUNDA';
         $uang_bayar     = (float) ($this->input->post('uang_bayar') ?? 0);
         $total_bayar    = (float) ($this->input->post('total_bayar') ?? 0);
@@ -542,14 +663,16 @@ class RajalController extends CI_Controller
                     'pasien_id'       => $pasien_id,
                     'shift_id'        => $shift_id,
                     'bayar_id'        => $bayar_id,
-                    'jenis_tr'        => '009',
+                    // 'jenis_tr'        => '009',
+                    'jenis_tr'        => '004',
                     'kelas_id'        => $kelas_id,
                     'poli_id'         => $poli_id,
                     'dokter_id'       => $dokter_id,
                     'rekanan_id'      => $rekanan_id,
                     'perjanjian_yn'   => 'T',
-                    'status_tr'       => '00',
+                    'status_tr'       => ($bayar_id ? '55' : '00'),
                     'tgl_transaksi'   => date('Y-m-d'),
+                    'tgl_lunas'       => ($bayar_id ? date('Y-m-d H:i:s') : null),
                     'total_sub'       => $total_sub,
                     'total_diskpct'   => $total_diskpct,
                     'total_diskon'    => $total_diskon,
@@ -578,7 +701,7 @@ class RajalController extends CI_Controller
                 if ($pembiayaan == 'UMUM' && $bayar_nanti != 1) {
                     // mapping metode bayar → jbayar_id
                     $mapMetode = [
-                        'CASH'     => 'CASH',
+                        'CASH'     => 'TUNAI',
                         'QRIS'     => 'QRIS',
                         'DEBIT'    => 'DEBIT',
                         'TRANSFER' => 'TRANSFER'
@@ -971,7 +1094,8 @@ class RajalController extends CI_Controller
                 $this->rm->updateTransHeaderPoli($lokasi_id, $episode_id, $transaksi_id, [
                     'bayar_id'          => $bayar_id,
                     'rekanan_id'        => $rekanan_id,
-                    'status_tr'         => '00',
+                    'status_tr'         => ($bayar_id ? '55' : '00'),
+                    'tgl_lunas'         => ($bayar_id ? date('Y-m-d H:i:s') : null),
                     'total_sub'         => $total_sub,
                     'total_diskpct'     => $total_diskpct,
                     'total_diskon'      => $total_diskon,
@@ -985,6 +1109,24 @@ class RajalController extends CI_Controller
                 ]);
 
 
+
+                // =========================================
+                // 7.1 Insert pembayaran registrasi POLI bila dibayar di awal
+                // =========================================
+                if ($pembiayaan == 'UMUM' && $bayar_nanti != 1 && !empty($bayar_id)) {
+                    $this->_insertPembayaranRegistrasi([
+                        'lokasi_id'    => $lokasi_id,
+                        'episode_id'   => $episode_id,
+                        'bayar_id'     => $bayar_id,
+                        'pasien_id'    => $pasien_id,
+                        'trans_id'     => $transaksi_id,
+                        'metode_bayar' => $metode_bayar,
+                        'uang_bayar'   => $uang_bayar,
+                        'total_bayar'  => $total_harga_net,
+                        'created_by'   => $user_id,
+                        'keterangan'   => 'Pembayaran registrasi poli ' . $metode_bayar
+                    ]);
+                }
 
                 // $this->rm->insertTransHeader($data_hd);
 
@@ -1091,7 +1233,7 @@ class RajalController extends CI_Controller
     }
 
 
-    public function cekRiwayatProgram()
+    public function cekRiwayatProgramxxxxx()
     {
         $pasien_id = $this->input->post('pasien_id');
         $jenis_kunjungan = $this->input->post('jenis_kunjungan');
@@ -1115,6 +1257,90 @@ class RajalController extends CI_Controller
         ]);
     }
 
+
+
+    /* ==========================================================
+ * 4. REPLACE method cekRiwayatProgram()
+ *    Versi lama bisa error saat jenis kunjungan poli karena lab/rad kosong.
+ * ========================================================== */
+    public function cekRiwayatProgram()
+    {
+        $this->output->set_content_type('application/json');
+
+        $pasien_id       = $this->input->post('pasien_id', true);
+        $jenis_kunjungan = $this->input->post('jenis_kunjungan', true);
+        $poli_id         = $this->input->post('poli', true);
+
+        $lab_item = $this->input->post('lab_item');
+        $rad_item = $this->input->post('rad_item');
+
+        $layan_ids = array_merge($lab_item ?? [], $rad_item ?? []);
+
+        $jml = $this->rm->cek_riwayat_program_pasien(
+            $pasien_id,
+            $jenis_kunjungan,
+            $poli_id,
+            $layan_ids
+        );
+
+        // return var_dump($jml);
+        // die;
+
+        echo json_encode([
+            'sudah_pernah' => $jml > 0,
+            'message'      => $jml > 0
+                ? 'Pasien memiliki riwayat layanan PROGRAM pada tahun berjalan. Mohon validasi kembali sebelum melanjutkan.'
+                : ''
+        ]);
+    }
+
+
+
+    /**
+     * Insert metode pembayaran registrasi ke pc01_keu_trnsbayar.
+     * Dipakai agar pembayaran yang dilakukan di awal registrasi tercatat
+     * sama seperti pembayaran di Kasir dan bisa ditelusuri dari bayar_id.
+     */
+    private function _insertPembayaranRegistrasi($payload)
+    {
+        $metode = strtoupper(trim((string)($payload['metode_bayar'] ?? 'TUNAI')));
+        $mapMetode = [
+            'CASH'     => 'TUNAI',
+            'TUNAI'    => 'TUNAI',
+            'QRIS'     => 'QRIS',
+            'DEBIT'    => 'DEBIT',
+            'TRANSFER' => 'TRANSFER'
+        ];
+
+        $jbayar_id = $mapMetode[$metode] ?? $metode;
+        $nominal = (float)($payload['uang_bayar'] ?? 0);
+        $total   = (float)($payload['total_bayar'] ?? 0);
+
+        if ($nominal <= 0) {
+            $nominal = $total;
+        }
+
+        if (empty($payload['bayar_id']) || $nominal <= 0) {
+            return false;
+        }
+
+        return $this->db->insert('pc01_keu_trnsbayar', [
+            'lokasi_id'    => $payload['lokasi_id'],
+            'episode_id'   => $payload['episode_id'],
+            'bayar_id'     => $payload['bayar_id'],
+            'pasien_id'    => $payload['pasien_id'],
+            'jbayar_id'    => $jbayar_id,
+            'keterangan'   => $payload['keterangan'] ?? ('Pembayaran ' . $metode),
+            'pembayaran'   => $nominal,
+            'kartu_no'     => null,
+            'kartu_nama'   => null,
+            'no_konf'      => null,
+            'aktif'        => '1',
+            'created_by'   => $payload['created_by'] ?? $this->session->userdata('user_id_pc'),
+            'created_date' => date('Y-m-d H:i:s'),
+            'trans_id'     => $payload['trans_id'] ?? null
+        ]);
+    }
 
     public function getTarifByJenis($jenis_kunjungan)
     {

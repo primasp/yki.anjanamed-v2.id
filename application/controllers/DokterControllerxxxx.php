@@ -574,10 +574,37 @@ class DokterController extends CI_Controller
         $hasil = $this->dm->simpansoap($data);
 
         /*
-         * Order penunjang tidak diproses saat Simpan SOAP.
-         * Pilihan Lab/Radiologi sudah auto-save saat checkbox dipilih/dibatalkan,
-         * sehingga reload setelah SOAP tidak menghilangkan order penunjang.
+         * ALUR BARU YKI TAHAP 2
+         * Order penunjang dokter dikirim bersama SOAP.
+         * - Lab/Rad dipisahkan dari menu Tindakan.
+         * - Menu Tindakan tetap khusus JKL-UMU.
+         * - Jika tidak ada checklist penunjang, order penunjang lama pada episode ini dinonaktifkan.
          */
+        $penunjangResult = [
+            'success' => true,
+            'message' => 'Tidak ada order penunjang yang dipilih.',
+            'items'   => []
+        ];
+
+        if (!empty($hasil)) {
+            $penunjangInput = $this->input->post('penunjang_order');
+            $penunjangItems = [];
+
+            if (is_array($penunjangInput)) {
+                $penunjangItems = $penunjangInput;
+            } elseif (!empty($penunjangInput)) {
+                $decoded = json_decode($penunjangInput, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $penunjangItems = $decoded;
+                }
+            }
+
+            if (!empty($penunjangItems)) {
+                $penunjangResult = $this->dm->simpanOrderPenunjangDokter($data, $penunjangItems);
+            } else {
+                $this->dm->hapusOrderPenunjangDokter($data);
+            }
+        }
 
         if (empty($hasil)) {
             $json['Responcode'] = '01';
@@ -586,6 +613,7 @@ class DokterController extends CI_Controller
             $json['Responcode']       = '00';
             $json['Respondesc']       = 'Soap Tersimpan';
             $json['Responresult']     = $hasil;
+            $json['PenunjangResult']  = $penunjangResult;
         }
 
         echo json_encode($json);
@@ -913,17 +941,6 @@ class DokterController extends CI_Controller
         $alergiObat = $this->input->post("alergiObat") ?: "00|Tidak Ada";
         list($data['ALERGI_OBAT_KD'], $data['ALERGI_OBAT_NM']) = array_pad(explode('|', $alergiObat), 2, null);
 
-        /*
-         * Order Penunjang Dokter sudah auto-save saat checkbox Lab/Radiologi dipilih/dibatalkan.
-         * Tombol Selesai tidak lagi menyimpan atau menghapus order penunjang agar pilihan
-         * yang sudah tersimpan tidak hilang karena payload Selesai tidak membawa checkbox.
-         */
-        $penunjangResult = [
-            'success' => true,
-            'message' => 'Order penunjang diproses otomatis saat pilihan Lab/Radiologi berubah.',
-            'items'   => []
-        ];
-
 
 
 
@@ -1155,7 +1172,6 @@ class DokterController extends CI_Controller
             'Respondesc' => !empty($hasil) ? 'Selesai Periksa' : 'Gagal',
             'Responresult' => $hasil ?? null,
             'BPJSResult' => $bpjsResult ?? null, // Jika BPJS diproses, sertakan hasilnya
-            'PenunjangResult' => $penunjangResult ?? null,
         ]);
         // }
         exit;
@@ -1283,15 +1299,13 @@ class DokterController extends CI_Controller
         $data['POLI_ID']     = $this->input->post("poliid");
         $data['DOKTER_ID']   = $this->input->post("dokterid");
         $data['REKANAN_ID']  = $this->input->post("rekananid");
-
-        $tglInput = $this->input->post("tanggal");
-        $data['TANGGAL'] = !empty($tglInput) ? date('Y-m-d', strtotime($tglInput)) : date('Y-m-d');
+        $data['TANGGAL']     = date('Y-m-d', strtotime($this->input->post("tanggal")));
         $data['CREATED_BY']  = $this->input->post("createdby");
 
-        if (empty($data['EPISODE_ID']) || empty($data['PASIEN_ID'])) {
+        if (empty($data['EPISODE_ID']) || empty($data['PASIEN_ID']) || empty($data['TRANS_ID'])) {
             echo json_encode([
                 'Responcode' => '01',
-                'Respondesc' => 'Data pasien belum lengkap. Pilih pasien terlebih dahulu.',
+                'Respondesc' => 'Data pasien / transaksi belum lengkap. Pilih pasien dan simpan SOAP terlebih dahulu.',
             ]);
             return;
         }
@@ -1318,19 +1332,12 @@ class DokterController extends CI_Controller
             echo json_encode([
                 'Responcode' => '00',
                 'Respondesc' => 'Order penunjang dikosongkan.',
-                'Responresult' => [
-                    'trans_co' => $data['TRANS_CO'],
-                    'items' => []
-                ]
+                'Responresult' => []
             ]);
             return;
         }
 
         $hasil = $this->dm->simpanOrderPenunjangDokter($data, $penunjangItems);
-
-        if (is_array($hasil)) {
-            $hasil['trans_co'] = $data['TRANS_CO'];
-        }
 
         echo json_encode([
             'Responcode' => !empty($hasil['success']) ? '00' : '01',

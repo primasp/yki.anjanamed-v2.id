@@ -1,3 +1,5 @@
+<!-- paliatif_modal.php -->
+
 <style>
     .exam-row {
         display: grid;

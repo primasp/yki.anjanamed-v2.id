@@ -170,7 +170,6 @@ class AsessmentModel extends CI_Model
           AND A.jenis_episode  = 'O'
           AND D.status         = '0'
            AND A.tgl_masuk      = ?
-          AND A.poli_id <> 'APS'
         GROUP BY 
             A.pasien_id, C.int_pasien_id, C.nama, B.no_urut_dr, C.tgl_lahir,
             A.episode_id, A.rekanan_id, A.poli_id, E.keterangan,KP.kunjungan_poli,
@@ -241,7 +240,6 @@ class AsessmentModel extends CI_Model
           AND A.jenis_episode  = 'O'
           AND D.status         = '0'
            AND A.tgl_masuk      = ?
-          AND A.poli_id <> 'APS'
         GROUP BY 
             A.pasien_id, C.int_pasien_id, C.nama, B.no_urut_dr, C.tgl_lahir,
             A.episode_id, A.rekanan_id, A.poli_id, E.keterangan,KP.kunjungan_poli,
@@ -369,7 +367,6 @@ class AsessmentModel extends CI_Model
                     AND A.kelas_id       = '6'
                     AND A.jenis_episode  = 'O'
                     AND A.tgl_masuk      = ?
-                    AND A.poli_id <> 'APS'
                 GROUP BY 
                     A.pasien_id, 
                     C.int_pasien_id, 
@@ -454,7 +451,6 @@ class AsessmentModel extends CI_Model
                     AND A.kelas_id       = '6'
                     AND A.jenis_episode  = 'O'
                     AND A.tgl_masuk      = ?
-                    AND A.poli_id <> 'APS'
                 GROUP BY 
                     A.pasien_id, 
                     C.int_pasien_id, 
@@ -542,21 +538,113 @@ class AsessmentModel extends CI_Model
 
     public function getBelumAnamnesaPenunjang($tanggal = null, $lokasi_id = '001')
     {
-        /*
-         * ALUR BARU:
-         * Worklist asesmen perawat tidak lagi menampilkan Penunjang APS/Lab/Rad.
-         * Form penunjang akan muncul setelah dokter menentukan pemeriksaan.
-         */
-        return [];
+        if (empty($tanggal)) {
+            $tanggal = date('Y-m-d');
+        }
+
+
+        $sql = "SELECT 
+                    A.pasien_id,
+                    C.int_pasien_id,
+                    C.nama AS nama_pas,
+                    B.no_urut_dr,
+                    C.tgl_lahir,
+                    A.episode_id,
+                    A.rekanan_id,
+                    A.poli_id,
+                    'Penunjang'::text AS nama_poli,
+                        '-'::text AS nama_dr,
+                    A.dokter_id,
+                    K.kunjungan_rs,
+                     COALESCE(KP.kunjungan_poli, 0) AS kunjungan_poli,
+                    to_char(A.created_date, 'HH24:MI') AS jam_daftar
+                FROM pc01_keu_episode A
+                JOIN pc01_med_prwt_tr B
+                ON A.episode_id = B.episode_id
+                AND A.pasien_id  = B.pasien_id
+                AND B.aktif      = '1'
+                AND B.done_status= '00'
+                AND B.lokasi_id  = '$lokasi_id'
+                JOIN pc01_gen_pasien_ms C 
+                ON A.pasien_id = C.pasien_id
+                JOIN (
+                    SELECT pasien_id, COUNT(*) AS kunjungan_rs
+                    FROM pc01_med_prwt_tr
+                    WHERE aktif = '1' AND lokasi_id = '$lokasi_id'
+                    GROUP BY pasien_id
+                ) K ON A.pasien_id = K.pasien_id
+                LEFT JOIN (
+                    SELECT pasien_id, poli_id, COUNT(*) AS kunjungan_poli
+                    FROM pc01_med_prwt_tr
+                    WHERE aktif = '1' AND lokasi_id = '$lokasi_id'
+                    GROUP BY pasien_id, poli_id
+                ) KP ON A.pasien_id = KP.pasien_id AND A.poli_id = KP.poli_id
+                WHERE A.lokasi_id      = '$lokasi_id'
+                AND A.status_episode IN ('00')
+                AND A.kelas_id       = '6'
+                AND A.jenis_episode  = 'O'
+                AND A.poli_id        = 'APS'
+                AND A.tgl_masuk      = '$tanggal'
+                GROUP BY 
+                    A.pasien_id, C.int_pasien_id, C.nama, B.no_urut_dr, C.tgl_lahir,KP.kunjungan_poli,
+                    A.episode_id, A.rekanan_id, A.poli_id, 
+                    A.dokter_id, K.kunjungan_rs, A.created_date
+                ORDER BY A.poli_id, A.dokter_id, B.no_urut_dr ASC
+            ";
+        return $this->db->query($sql)->result();
     }
 
     public function getSudahAnamnesaPenunjang($tanggal = null, $lokasi_id = '001')
     {
-        /*
-         * ALUR BARU:
-         * Worklist asesmen perawat tidak lagi menampilkan Penunjang APS/Lab/Rad.
-         */
-        return [];
+        $sql = "SELECT 
+                A.pasien_id,
+                C.int_pasien_id,
+                C.nama AS nama_pas,
+                B.no_urut_dr,
+                C.tgl_lahir,
+                A.episode_id,
+                A.rekanan_id,
+                A.poli_id,
+                'Penunjang'::text AS nama_poli,
+                '-'::text AS nama_dr,
+                A.dokter_id,
+                K.kunjungan_rs,
+                 COALESCE(KP.kunjungan_poli, 0) AS kunjungan_poli,
+                to_char(A.created_date, 'HH24:MI') AS jam_daftar
+            FROM pc01_keu_episode A
+            JOIN pc01_med_prwt_tr B
+            ON A.episode_id = B.episode_id
+            AND A.pasien_id  = B.pasien_id
+            AND B.aktif      = '1'
+            AND B.done_status= '01'
+            AND B.lokasi_id  = '$lokasi_id'
+            JOIN pc01_gen_pasien_ms C 
+            ON A.pasien_id = C.pasien_id
+            JOIN (
+                SELECT pasien_id, COUNT(*) AS kunjungan_rs
+                FROM pc01_med_prwt_tr
+                WHERE aktif = '1' AND lokasi_id = '$lokasi_id'
+                GROUP BY pasien_id
+            ) K ON A.pasien_id = K.pasien_id
+            LEFT JOIN (
+                    SELECT pasien_id, poli_id, COUNT(*) AS kunjungan_poli
+                    FROM pc01_med_prwt_tr
+                    WHERE aktif = '1' AND lokasi_id = '$lokasi_id'
+                    GROUP BY pasien_id, poli_id
+                ) KP ON A.pasien_id = KP.pasien_id AND A.poli_id = KP.poli_id
+            WHERE A.lokasi_id      = '$lokasi_id'
+            AND A.status_episode IN ('00')
+            AND A.kelas_id       = '6'
+            AND A.jenis_episode  = 'O'
+            AND A.poli_id        = 'APS'
+            AND A.tgl_masuk      = '$tanggal'
+            GROUP BY 
+                A.pasien_id, C.int_pasien_id, C.nama, B.no_urut_dr, C.tgl_lahir,KP.kunjungan_poli,
+                A.episode_id, A.rekanan_id, A.poli_id, 
+                A.dokter_id, K.kunjungan_rs, A.created_date
+            ORDER BY A.poli_id, A.dokter_id, B.no_urut_dr ASC
+            ";
+        return $this->db->query($sql)->result();
     }
 
     public function insertPengkajianAwal($data)

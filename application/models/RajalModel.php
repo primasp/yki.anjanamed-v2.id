@@ -22,6 +22,233 @@ class RajalModel extends CI_Model
         return $query->result_array();
     }
 
+    // private function buildHeaderRegistrasi($data)
+    // {
+    //     $bayar_id = !empty($data['bayar_id']) ? $data['bayar_id'] : null;
+    //     $isLunas  = !empty($bayar_id);
+
+    //     return [
+    //         'lokasi_id'       => $data['lokasi_id'],
+    //         'episode_id'      => $data['episode_id'],
+    //         'trans_id'        => $data['trans_id'],
+    //         'pasien_id'       => $data['pasien_id'],
+    //         'shift_id'        => $data['shift_id'] ?? null,
+    //         'bayar_id'        => $bayar_id,
+    //         'jenis_tr'        => $data['jenis_tr'] ?? '001',
+    //         'kelas_id'        => $data['kelas_id'] ?? '6',
+    //         'poli_id'         => $data['poli_id'],
+    //         'dokter_id'       => $data['dokter_id'],
+    //         'rekanan_id'      => $data['rekanan_id'] ?? 'UMUM',
+    //         'perjanjian_yn'   => 'T',
+    //         'status_tr'       => $isLunas ? '55' : '00',
+    //         'tgl_transaksi'   => date('Y-m-d H:i:s'),
+    //         'tgl_lunas'       => $isLunas ? date('Y-m-d H:i:s') : null,
+    //         'total_sub'       => $data['total_sub'] ?? 0,
+    //         'total_diskpct'   => $data['total_diskpct'] ?? 0,
+    //         'total_diskon'    => $data['total_diskon'] ?? 0,
+    //         'total_harga'     => $data['total_harga'] ?? 0,
+    //         'total_rekanan'   => $data['total_rekanan'] ?? 0,
+    //         'total_pribadi'   => $data['total_pribadi'] ?? ($data['total_harga'] ?? 0),
+    //         'bayar_rekanan'   => 0,
+    //         'bayar_pribadi'   => $isLunas ? ($data['bayar_pribadi'] ?? ($data['total_harga'] ?? 0)) : 0,
+    //         'aktif'           => '1',
+    //         'created_by'      => $data['created_by'],
+    //         'created_date'    => date('Y-m-d H:i:s'),
+    //         'total_tanggung'  => 0,
+    //         'sdh_rehitung'    => 'T'
+    //     ];
+    // }
+
+    // public function insertHeaderRegistrasi($data)
+    // {
+    //     return $this->db->insert('pc01_keu_transaksi_hd', $this->buildHeaderRegistrasi($data));
+    // }
+
+
+
+
+    /* ==========================================================
+ * 1. ITEM PENUNJANG RUJUKAN
+ *    Alur baru: Pemeriksaan Penunjang hanya untuk rujukan luar.
+ *    Saat ini hanya menampilkan layanan Papsmear/Rujukan dan hanya
+ *    boleh digunakan ketika provider/pembiayaan = UMUM.
+ * ========================================================== */
+    public function get_lab_items_papsmear_rujukan($pembiayaan = 'UMUM')
+    {
+        if (strtoupper((string) $pembiayaan) !== 'UMUM') {
+            return [];
+        }
+
+        $sql = "SELECT
+                a.layan_id,
+                a.nama_layan1 AS nama_pemeriksaan,
+                a.kategori_id,
+                COALESCE(b.harga, 0) AS harga
+            FROM pcare_manager.pc01_keu_layan_ms a
+            JOIN pcare_manager.pc01_keu_harga_dt b
+                ON a.layan_id = b.layan_id
+               AND b.kelas_id = '6'
+            WHERE a.aktif = '1'
+              AND a.kategori_id = 'JKL-LAB'
+              and a.layan_id ='TDK000000000010'
+            --   AND (
+            --         UPPER(a.nama_layan1) LIKE '%PAPSMEAR%'
+            --      OR UPPER(a.nama_layan1) LIKE '%PAP SMEAR%'
+            --   )
+            ORDER BY
+                CASE WHEN UPPER(a.nama_layan1) LIKE '%RUJUK%' THEN 0 ELSE 1 END,
+                a.nama_layan1 ASC";
+
+        return $this->db->query($sql)->result_array();
+    }
+
+
+
+    /* ==========================================================
+ * 2. POLI BERDASARKAN PEMBIAYAAN DAN JENIS KUNJUNGAN
+ *    - jenis_kunjungan = 2 / penunjang: tidak perlu pilih poli.
+ *    - jenis_kunjungan = 1 / poli: mengikuti alur lama.
+ * ========================================================== */
+    public function getPoliByPembiayaanV2($pembiayaan, $jenis_kunjungan = '1')
+    {
+        if ((string) $jenis_kunjungan === '2') {
+            return [];
+        }
+
+        $where = "";
+
+        if ($pembiayaan === 'UMUM') {
+            // Sesuai query lama: Klinik Umum & Klinik Vaksin.
+            // Jika vaksin sudah tidak dipakai, hapus POLI0000000003.
+            $where = "AND A.poli_id IN ('POLI0000000002', 'POLI0000000003')";
+        } elseif ($pembiayaan === 'PROGRAM') {
+            // Sesuai query lama: Program dapat diarahkan ke Paliatif/Umum.
+            $where = "AND A.poli_id IN ('POLI0000000001', 'POLI0000000002')";
+        }
+
+        $query = "SELECT A.poli_id, A.keterangan
+              FROM pc01_med_poli_ms A
+              WHERE A.aktif = '1'
+                AND A.lokasi_id = '001'
+                $where
+              ORDER BY A.keterangan ASC";
+
+        return $this->db->query($query)->result();
+    }
+
+
+
+    /* ==========================================================
+ * 3. HISTORY LAYANAN PASIEN
+ *    Ditampilkan di kanan saat admin memilih Kunjungan ke Poliklinik.
+ *    Tujuan: admin dapat validasi apakah pasien layak memakai PROGRAM.
+ * ========================================================== */
+    public function get_history_layanan_pasien($pasien_id, $limit = 8)
+    {
+        $limit = (int) $limit;
+        if ($limit <= 0) {
+            $limit = 8;
+        }
+
+        $sql = "SELECT
+                e.episode_id,
+                TO_CHAR(e.tgl_masuk::date, 'DD-MM-YYYY') AS tgl_masuk,
+                e.rekanan_id,
+                COALESCE(p.keterangan, '-') AS nama_poli,
+                COALESCE(d.nama, '-') AS nama_dokter,
+                COALESCE(STRING_AGG(DISTINCT l.nama_layan1, ', ' ORDER BY l.nama_layan1), '-') AS layanan,
+                COALESCE(SUM(COALESCE(t.harga_total, 0)), 0) AS total_harga,
+                CASE
+                    WHEN e.rekanan_id = 'PROGRAM' THEN 'PROGRAM'
+                    WHEN e.rekanan_id = 'UMUM' THEN 'UMUM'
+                    ELSE COALESCE(e.rekanan_id, '-')
+                END AS provider
+            FROM pc01_keu_episode e
+            LEFT JOIN pc01_med_poli_ms p
+                   ON p.poli_id = e.poli_id
+                  AND p.lokasi_id = e.lokasi_id
+                  AND p.aktif = '1'
+            LEFT JOIN pc01_med_dokter_ms d
+                   ON d.dokter_id = e.dokter_id
+                  AND d.lokasi_id = e.lokasi_id
+                  AND d.aktif = '1'
+            LEFT JOIN pc01_keu_transctr_it t
+                   ON t.episode_id = e.episode_id
+                  AND t.pasien_id = e.pasien_id
+                  AND t.aktif = '1'
+            LEFT JOIN pc01_keu_layan_ms l
+                   ON l.layan_id = t.layan_id
+                  AND l.aktif = '1'
+            WHERE e.pasien_id = ?
+              AND e.aktif = '1'
+              AND e.jenis_episode = 'O'
+            GROUP BY
+                e.episode_id,
+                e.tgl_masuk,
+                e.rekanan_id,
+                p.keterangan,
+                d.nama
+            ORDER BY e.tgl_masuk DESC
+            LIMIT $limit";
+
+        return $this->db->query($sql, [$pasien_id])->result_array();
+    }
+
+
+    /* ==========================================================
+ * 4. VALIDASI PROGRAM BERDASARKAN RIWAYAT
+ *    Dipakai ketika pasien memakai pembiayaan PROGRAM.
+ *    Untuk poli, validasi minimal dari episode/poli tahun berjalan.
+ *    Untuk penunjang, validasi dari layanan yang dipilih.
+ * ========================================================== */
+    public function cek_riwayat_program_pasien($pasien_id, $jenis_kunjungan, $poli_id = null, $layan_ids = [])
+    {
+        $tahun = date('Y');
+
+        if ((string) $jenis_kunjungan === '1') {
+            $params = [$pasien_id, $tahun];
+            $wherePoli = '';
+
+            if (!empty($poli_id)) {
+                $wherePoli = "AND e.poli_id = ?";
+                $params[] = $poli_id;
+            }
+
+            $sql = "SELECT COUNT(*) AS jml
+                FROM pc01_keu_episode e
+                WHERE e.pasien_id = ?
+                  AND e.aktif = '1'
+                  AND e.jenis_episode = 'O'
+                  AND e.rekanan_id = 'PROGRAM'
+                  AND EXTRACT(YEAR FROM e.tgl_masuk::date) = ?
+                  AND e.status_episode IN ('55','00')
+                  $wherePoli";
+
+            return (int) ($this->db->query($sql, $params)->row()->jml ?? 0);
+        }
+
+        $layan_ids = array_values(array_filter((array) $layan_ids));
+        if (empty($layan_ids)) {
+            return 0;
+        }
+
+        $escaped = implode(',', array_map([$this->db, 'escape'], $layan_ids));
+
+        $sql = "SELECT COUNT(*) AS jml
+            FROM pc01_keu_transctr_it a
+            JOIN pc01_keu_episode b
+              ON a.episode_id = b.episode_id
+             AND b.aktif = '1'
+            WHERE a.pasien_id = ?
+              AND a.aktif = '1'
+              AND a.layan_id IN ($escaped)
+              AND EXTRACT(YEAR FROM a.tgl_transaksi::date) = ?
+              AND b.status_episode IN ('55','00')";
+
+        return (int) ($this->db->query($sql, [$pasien_id, $tahun])->row()->jml ?? 0);
+    }
+
+
 
     public function get_pasien_v2($term, $type)
     {

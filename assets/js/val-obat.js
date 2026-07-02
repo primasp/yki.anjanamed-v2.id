@@ -1,5 +1,51 @@
 console.log("Validasi Obat JS loaded");
 
+function normalizeCurrency(value) {
+  if (value === null || value === undefined) return 0;
+  if (typeof value === "number") return isNaN(value) ? 0 : value;
+
+  let s = String(value).trim();
+  if (s === "") return 0;
+
+  // Buang simbol Rupiah/spasi, sisakan angka dan pemisah.
+  s = s.replace(/[^0-9,.\-]/g, "");
+
+  const hasComma = s.indexOf(",") !== -1;
+  const hasDot = s.indexOf(".") !== -1;
+
+  if (hasComma && hasDot) {
+    // Format Indonesia: 1.250,50
+    if (s.lastIndexOf(",") > s.lastIndexOf(".")) {
+      s = s.replace(/\./g, "").replace(",", ".");
+    } else {
+      // Format internasional: 1,250.50
+      s = s.replace(/,/g, "");
+    }
+  } else if (hasComma) {
+    const parts = s.split(",");
+    // 4000,00 => 4000.00
+    if (parts.length === 2 && parts[1].length <= 2) {
+      s = parts[0].replace(/\./g, "") + "." + parts[1];
+    } else {
+      // 4,000 => 4000
+      s = s.replace(/,/g, "");
+    }
+  } else if (hasDot) {
+    const parts = s.split(".");
+    // 4000.00 => 4000.00, tapi 4.000 => 4000
+    if (!(parts.length === 2 && parts[1].length <= 2)) {
+      s = s.replace(/\./g, "");
+    }
+  }
+
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
+function parseCurrencyValue(value) {
+  return normalizeCurrency(value);
+}
+
 $("#btn-caripasien").on("click", caripasien);
 $("#cari-obat").on("click", cariobatms);
 
@@ -30,14 +76,7 @@ function validasiresep() {
   var bolehSimpan = true;
 
   function parseCurrency(v) {
-    if (!v) return 0;
-    return (
-      parseFloat(
-        String(v)
-          .replace(/[^0-9,]/g, "")
-          .replace(",", ".")
-      ) || 0
-    );
+    return parseCurrencyValue(v);
   }
 
   // Loop baris tabel (jQuery)
@@ -87,7 +126,7 @@ function validasiresep() {
 
   if (!bolehSimpan) {
     alert(
-      "Stok kurang pada beberapa item. Silakan periksa baris yang disorot."
+      "Stok kurang pada beberapa item. Silakan periksa baris yang disorot.",
     );
     return false;
   }
@@ -120,7 +159,7 @@ function validasiresep() {
         Swal.fire(
           "Berhasil",
           res.Respondesc || "Resep berhasil divalidasi.",
-          "success"
+          "success",
         ).then(() => {
           location.reload();
         });
@@ -128,7 +167,7 @@ function validasiresep() {
         Swal.fire(
           "Gagal",
           res.Respondesc || "Terjadi kesalahan saat menyimpan resep.",
-          "error"
+          "error",
         );
       }
     },
@@ -137,7 +176,7 @@ function validasiresep() {
       Swal.fire(
         "Error",
         "Terjadi kesalahan pada server saat validasi resep.",
-        "error"
+        "error",
       );
     },
   });
@@ -153,10 +192,7 @@ function validasiresepx() {
 
   // Fungsi untuk membersihkan format mata uang
   function parseCurrency(value) {
-    // return parseFloat(value.replace(/[^\d.-]/g, "")) || 0;
-
-    const normalizedValue = value.replace(/[^0-9,]/g, "").replace(",", ".");
-    return parseFloat(normalizedValue) || 0;
+    return parseCurrencyValue(value);
   }
 
   for (let i = 0, row; (row = table.rows[i]); i++) {
@@ -548,7 +584,7 @@ function tampildetailobat(episodeid, pasienid, transco) {
             hasil[i].nama +
             " (" +
             hasil[i].int_pasien_id +
-            ")"
+            ")",
         );
         $("#listresepall").html(loadresep);
         $("#resultresepdokter").html(loadresep);
@@ -596,7 +632,7 @@ function ambilresep(event) {
             hasil[i].tipe_obat,
             hasil[i].header,
             hasil[i].satuan_id,
-            hasil[i].signa_id
+            hasil[i].signa_id,
           );
         }
 
@@ -773,7 +809,7 @@ function tambahobat(
   vtipeobat,
   vheader,
   vsatuanid,
-  vsignaid
+  vsignaid,
 ) {
   // Buat masing-masing row
   let table = document.getElementById("resultvalidasiobat");
@@ -841,7 +877,7 @@ function tambahobat(
     let inputQty = td5.querySelector("input");
     inputQty.addEventListener("input", function () {
       let qty = parseFloat(inputQty.value) || 0;
-      let harga = parseFloat(td13.innerHTML) || 0;
+      let harga = normalizeCurrency(td13.innerHTML);
       td14.innerHTML = (qty * harga).toFixed(2); // Menghitung dan menampilkan harga total
       hitungTotalHarga();
     });
@@ -1003,7 +1039,7 @@ function hitungTotalHarga() {
   // Loop melalui semua baris di tabel dan tambahkan nilai dari total harga
   for (let i = 0; i < table.rows.length; i++) {
     let td14 = table.rows[i].cells[14]; // Mengambil sel total harga
-    let hargaTotal = parseFloat(td14.innerHTML) || 0;
+    let hargaTotal = normalizeCurrency(td14.innerHTML);
     totalHarga += hargaTotal;
 
     table.rows[i].cells[15].innerHTML = vurutbaru;
@@ -1381,7 +1417,7 @@ function buatracik(e) {
       e.vtipeobat,
       e.vheader,
       e.vsatuanid,
-      e.vsignaid
+      e.vsignaid,
     );
   });
 

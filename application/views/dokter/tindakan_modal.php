@@ -1,134 +1,132 @@
-<div class="modal fade" id="modal_tindakan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-bs-backdrop="static">
+<!-- tindakan_modal.php - YKI Tahap 2 -->
+
+<div class="modal fade dokter-action-modal" id="modal_tindakan" tabindex="-1" role="dialog" aria-labelledby="modalTindakanLabel" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content" style="height: 800px;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tindakan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content dokter-modal-content">
+            <div class="modal-header dokter-modal-header">
+                <div>
+                    <h5 class="modal-title" id="modalTindakanLabel">
+                        <i class="fas fa-notes-medical me-2"></i>Tindakan Umum
+                    </h5>
+                    <small>Khusus layanan kategori JKL-UMU. Lab/Radiologi diinput dari panel Penunjang Dokter.</small>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" style="overflow-y: auto;">
-                <div class="card-body">
-                    <div class="form-group row" style="margin: 0; padding: 0;">
-                        <label for="rm_pasien" class="col-sm-2 col-form-label">MRN</label>
-                        <div class="col-sm-4" style="margin: 0; padding: 0;">
-                            <input type="text" class="form-control form-control-sm rm_pasien" id="rm_pasien2" name="rm_pasien2" style="border: none; border-bottom: 1px solid #000; margin: 0; padding: 0; border-radius: 0;">
-                        </div>
-                        <div class="col-sm-1"></div>
-                        <label class="col-sm-2 col-form-label">Jenis Kelamin</label>
-                        <div class="col-sm-3" style="margin: 0; padding: 0;">
-                            <input type="text" class="form-control form-control-sm jk_pasien" id="jk_pasien2" name="jk_pasien2" style="border: none; border-bottom: 1px solid #000; margin: 0; padding: 0; border-radius: 0">
-                        </div>
-                    </div>
-                    <div class="form-group row" style="margin: 0; padding: 0;">
-                        <label class="col-sm-2 col-form-label">Nama</label>
-                        <div class="col-sm-4" style="margin: 0; padding: 0;">
-                            <input type="text" class="form-control form-control-sm nama_pasien" id="nama_pasien4" name="nama_pasien4" style="border: none; border-bottom: 1px solid #000; margin: 0; padding: 0; border-radius: 0">
-                        </div>
-                        <div class="col-sm-1"></div>
-                        <label class="col-sm-2 col-form-label">Penjamin</label>
-                        <div class="col-sm-3" style="margin: 0; padding: 0;">
-                            <input type="text" class="form-control form-control-sm prov_pasien" id="prov_pasien4" name="prov_pasien4" style="border: none; border-bottom: 1px solid #000; margin: 0; padding: 0; border-radius: 0">
-                        </div>
-                    </div>
-                    <div class="form-group row" style="margin: 0; padding: 0;">
-                        <label for="lahir_pasien" class="col-sm-2 col-form-label">Tgl Lahir</label>
-                        <div class="col-sm-4" style="margin: 0; padding: 0;">
-                            <input type="text" class="form-control form-control-sm lahir_pasien" id="lahir_pasien3" name="lahir_pasien3" style="border: none; border-bottom: 1px solid #000; margin: 0; padding: 0; border-radius: 0">
-                        </div>
-                        <div class="col-sm-1"></div>
-                        <label class="col-sm-2 col-form-label">Kunjungan Ke</label>
-                        <div class="col-sm-3" style="margin: 0; padding: 0;">
-                            <input type="text" class="form-control form-control-sm kunj_ke" id="kunj_ke4" name="kunj_ke4" style="border: none; border-bottom: 1px solid #000; margin: 0; padding: 0; border-radius: 0">
-                        </div>
-                    </div>
 
-                    <hr>
-
-                    <div class="form-group row" style="margin: 0; padding: 0;">
-                        <label for="pencarian_tindakan" class="col-sm-2 col-form-label">Nama Tindakan</label>
-                        <div class="col-sm-3" style="margin: 0; padding: 0;">
-                            <input type="text" class="form-control form-control-sm" id="pencarian_tindakan" name="pencarian_tindakan">
-                        </div>
-                        <label class="col-sm-1 col-form-label">Jumlah</label>
-                        <div class="col-sm-1" style="margin: 0; padding: 0;">
-                            <input type="text" class="form-control form-control-sm" id="jumlah_tindakan" name="jumlah_tindakan">
-                        </div>
-                        <div class="col-sm-2">
-                            <button class="btn btn-primary mb-3" id="btn_tambah_tindakan">
-                                <i class="fas fa-search"></i> Tambah
-                            </button>
-                        </div>
-                        <div class="col-sm-1" style="margin: 0; padding: 0;">
-                            <input type="hidden" class="form-control form-control-sm" id="nama_tindakan" name="nama_tindakan">
-                        </div>
-                        <div class="col-sm-1" style="margin: 0; padding: 0;">
-                            <input type="hidden" class="form-control form-control-sm" id="kode_tindakan" name="kode_tindakan">
-                        </div>
-                        <div class="col-sm-1" style="margin: 0; padding: 0;">
-                            <input type="hidden" class="form-control form-control-sm" id="harga_tindakan" name="harga_tindakan">
-                        </div>
+            <div class="modal-body dokter-modal-body">
+                <div class="doctor-patient-strip mb-3">
+                    <div>
+                        <span>MRN</span>
+                        <strong><input type="text" class="rm_pasien" id="rm_pasien2" name="rm_pasien2" readonly></strong>
                     </div>
-
-                    <div class="form-group row" style="margin: 0; padding: 0;">
-                        <div class="col-md-7">
-                            <div class="row">
-                                <table class="table small table-hover table-head-fixed text-nowrap">
-                                    <thead class="text-center">
-                                        <tr>
-                                            <th>Nama Tindakan</th>
-                                            <th style="width: 20%">Jumlah</th>
-                                            <th style="width: 20%">Total</th>
-                                            <th style="width: 10%"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="listtindakan"></tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <div>
+                        <span>Nama</span>
+                        <strong><input type="text" class="nama_pasien" id="nama_pasien4" name="nama_pasien4" readonly></strong>
+                    </div>
+                    <div>
+                        <span>Jenis Kelamin</span>
+                        <strong><input type="text" class="jk_pasien" id="jk_pasien2" name="jk_pasien2" readonly></strong>
+                    </div>
+                    <div>
+                        <span>Provider</span>
+                        <strong><input type="text" class="prov_pasien" id="prov_pasien4" name="prov_pasien4" readonly></strong>
+                    </div>
+                    <div>
+                        <span>Tgl Lahir</span>
+                        <strong><input type="text" class="lahir_pasien" id="lahir_pasien3" name="lahir_pasien3" readonly></strong>
+                    </div>
+                    <div>
+                        <span>Kunjungan</span>
+                        <strong><input type="text" class="kunj_ke" id="kunj_ke4" name="kunj_ke4" readonly></strong>
                     </div>
                 </div>
+
+                <div class="alert alert-info d-flex align-items-start gap-2 py-2">
+                    <i class="fas fa-info-circle mt-1"></i>
+                    <div>
+                        <strong>Catatan alur baru:</strong>
+                        Tindakan yang dicari di sini hanya tindakan umum. Layanan Papsmear, Mammografi, dan USG tidak muncul di menu ini.
+                    </div>
+                </div>
+
+                <div class="doctor-inline-form mb-3">
+                    <div class="flex-grow-1">
+                        <label for="pencarian_tindakan" class="form-label">Nama Tindakan</label>
+                        <input type="text" class="form-control form-control-sm" id="pencarian_tindakan" name="pencarian_tindakan" placeholder="Klik tambah/cari untuk memilih tindakan umum">
+                    </div>
+                    <div style="width:110px">
+                        <label class="form-label">Jumlah</label>
+                        <input type="number" min="1" class="form-control form-control-sm" id="jumlah_tindakan" name="jumlah_tindakan" value="1">
+                    </div>
+                    <div class="pt-4">
+                        <button type="button" class="btn btn-primary" id="btn_tambah_tindakan" data-bs-toggle="modal" data-bs-target="#modal_caritindakan">
+                            <i class="fas fa-search me-1"></i> Cari
+                        </button>
+                    </div>
+
+                    <input type="hidden" id="nama_tindakan" name="nama_tindakan">
+                    <input type="hidden" id="kode_tindakan" name="kode_tindakan">
+                    <input type="hidden" id="harga_tindakan" name="harga_tindakan">
+                </div>
+
+                <div class="table-responsive dokter-table-wrap">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Nama Tindakan</th>
+                                <th class="text-center" style="width: 15%">Jumlah</th>
+                                <th class="text-end" style="width: 20%">Total</th>
+                                <th class="text-center" style="width: 10%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listtindakan"></tbody>
+                    </table>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="btn-simpan-tindakan" onclick="simpantindakan(event)">Simpan</button>
+
+            <div class="modal-footer dokter-modal-footer">
+                <button type="button" class="btn btn-primary" id="btn-simpan-tindakan" onclick="simpantindakan(event)">
+                    <i class="fas fa-save me-1"></i> Simpan
+                </button>
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Cari tindakan-->
-<div class="modal fade" id="modal_caritindakan" tabindex="-1" role="dialog" data-bs-backdrop="static">
+<div class="modal fade dokter-action-modal" id="modal_caritindakan" tabindex="-1" role="dialog" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content" style="height: 800px;">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tindakan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content dokter-modal-content">
+            <div class="modal-header dokter-modal-header">
+                <div>
+                    <h5 class="modal-title"><i class="fas fa-search me-2"></i>Cari Tindakan Umum</h5>
+                    <small>Master yang tampil sudah dibatasi kategori JKL-UMU.</small>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" style="overflow-y: auto;">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <label for="input_caritindakan" class="col-sm-2 col-form-label">Cari</label>
-                            <input class="form-control form-control-sm" id="input_caritindakan" type="text" name="input_caritindakan">
-                        </div>
+
+            <div class="modal-body dokter-modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-5">
+                        <label for="input_caritindakan" class="form-label">Cari tindakan</label>
+                        <input class="form-control form-control-sm" id="input_caritindakan" type="text" name="input_caritindakan" placeholder="Ketik nama tindakan umum...">
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-body table-responsive p-0" style="height: 500px;">
-                            <table class="table table-sm small table-hover table-head-fixed text-nowrap">
-                                <thead class="text-center">
-                                    <tr>
-                                        <th>Tindakan</th>
-                                        <th>Harga</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="listmastertindakan"></tbody>
-                            </table>
-                        </div>
-                    </div>
+
+                <div class="table-responsive dokter-table-wrap">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Tindakan</th>
+                                <th class="text-end" style="width: 25%">Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listmastertindakan"></tbody>
+                    </table>
                 </div>
             </div>
-            <div class="modal-footer">
+
+            <div class="modal-footer dokter-modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>

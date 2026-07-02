@@ -37,9 +37,7 @@
 
     <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>assets/css/primacare.css?v=<?= time() ?>">
 
-    <?php if (!empty($page_css)) : ?>
-        <link rel="stylesheet" href="<?= base_url('assets/' . $page_css . '?v=' . time()); ?>">
-    <?php endif; ?>
+
 
     <!-- <script src="<?= base_url(); ?>assets/plugins/moment/moment.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
@@ -52,6 +50,10 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 
     <link rel="stylesheet" href="<?= base_url(); ?>assets/plugins/scrollbar/scroll.min.css">
+
+    <?php if (!empty($page_css)) : ?>
+        <link rel="stylesheet" href="<?= base_url('assets/' . $page_css . '?v=' . time()); ?>">
+    <?php endif; ?>
 
 
 

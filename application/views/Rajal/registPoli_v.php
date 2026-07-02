@@ -1,307 +1,273 @@
-<div class="content">
+<!-- <link rel="stylesheet" href="<?= base_url('assets/css/regist-poli.css?v=' . time()) ?>"> -->
+<?php if (!empty($page_css)) : ?>
+    <link rel="stylesheet" href="<?= base_url('assets/' . $page_css . '?v=' . time()); ?>">
+<?php endif; ?>
 
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="row">
-            <div class="col-sm-12">
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="<?= base_url('Rajal-All') ?>">Rawat jalan</a></li>
-                    <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                    <li class="breadcrumb-item active">Registrasi-V2</li>
-                </ul>
-            </div>
+<div class="content registrasi-yki-v3">
+    <div class="page-header yki-page-header">
+        <div>
+            <ul class="breadcrumb yki-breadcrumb">
+                <li class="breadcrumb-item"><a href="<?= base_url('Rajal-All') ?>">Rawat jalan</a></li>
+                <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
+                <li class="breadcrumb-item active">Registrasi Layanan YKI Tahap 2</li>
+            </ul>
+            <h3>Registrasi Layanan</h3>
+            <p>Alur baru: Pemeriksaan Penunjang Rujukan dan Kunjungan ke Poliklinik.</p>
+        </div>
+        <div class="yki-header-badge">
+            <span>YKI</span>
+            <strong>Tahap 2</strong>
         </div>
     </div>
-    <form id="formRegistLayan">
-        <div class="row">
 
-            <div class="col-xl-10 col-lg-9 col-md-8 col-sm-8">
-
-                <div class="card-box">
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mailview-header comman-space-flex">
-                                <div class="sender-info comman-flex">
-                                    <div class="send-user send-user-name">
-                                        <h4>Data Pasien</h4>
-                                    </div>
-                                </div>
-                                <div class="forward-send">
-                                    <a href="javascript" class="btn btn-primary forwrd-btn-data-pas">
-                                        <img src="<?= base_url('assets/img/icons/replay-01.svg') ?>" class="me-2" alt="img">Atur Ulang
-                                    </a>
-                                </div>
-                            </div>
+    <form id="formRegistLayan" autocomplete="off">
+        <div class="row g-3">
+            <div class="col-xl-10 col-lg-9 col-md-8">
+                <div class="yki-card">
+                    <div class="yki-section-head">
+                        <div>
+                            <span class="yki-section-kicker">01</span>
+                            <h4>Data Pasien</h4>
+                            <p>Pastikan pasien yang dipilih sudah sesuai sebelum menentukan layanan.</p>
                         </div>
+                        <button type="button" class="btn yki-btn-light forwrd-btn-data-pas">
+                            <i class="fas fa-redo-alt me-2"></i>Atur Ulang
+                        </button>
                     </div>
 
-
-                    <div class="row pt-3">
-
-                        <!-- <div class="col-md-6"> -->
-                        <div class="col-xl-5 col-lg-5 col-md-11 col-sm-11">
-                            <div class="input-block local-forms">
-                                <label class="focus-label">Nama Lengkap <span class="login-danger">*</span></label>
-                                <input type="text" id="namaPas" name="namaPas" class="form-control floating" value="<?= isset($pasien) ? $pasien['nama'] : '' ?>" required>
+                    <div class="row g-3 pt-2">
+                        <div class="col-xl-5 col-lg-5 col-md-11">
+                            <div class="yki-field">
+                                <label>Nama Lengkap <span>*</span></label>
+                                <input type="text" id="namaPas" name="namaPas" class="form-control" value="<?= isset($pasien) ? $pasien['nama'] : '' ?>" required>
                             </div>
                         </div>
 
-
-                        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 pt-1">
-                            <button type="button" class="btn btn-primary shadow-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#bookingModal" title="Pasien Perjanjian">
-                                <!-- <i class="fas fa-file-signature"></i> -->
+                        <div class="col-xl-1 col-lg-1 col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn yki-btn-icon" data-bs-toggle="modal" data-bs-target="#bookingModal" title="Pasien Perjanjian">
                                 <i class="fas fa-calendar-check"></i>
                             </button>
                         </div>
 
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                            <div class="input-block local-forms">
-                                <label class="focus-label">No. Rekam medis <span class="login-danger">*</span></label>
-                                <input type="text" id="noRm" name="noRm" class="form-control floating" value="<?= isset($pasien) ? $pasien['int_pasien_id'] : '' ?>" required>
-                                <input type="text" name="pasien_id" id="pasien_id" value="<?= isset($pasien) ? $pasien['pasien_id'] : '' ?>" hidden>
+                        <div class="col-xl-6 col-lg-6 col-md-12">
+                            <div class="yki-field">
+                                <label>No. Rekam Medis <span>*</span></label>
+                                <input type="text" id="noRm" name="noRm" class="form-control" value="<?= isset($pasien) ? $pasien['int_pasien_id'] : '' ?>" required>
+                                <input type="hidden" name="pasien_id" id="pasien_id" value="<?= isset($pasien) ? $pasien['pasien_id'] : '' ?>">
                             </div>
                         </div>
 
-                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-                            <div class="input-block local-forms">
-                                <label class="focus-label">Tanggal Lahir <span class="text-danger">*</span></label>
-                                <div class="cal-icon">
-                                    <input class="form-control floating " id="tgl_lahir" name="tgl_lahir" type="text" value="<?= isset($pasien) ? $pasien['tgl_lahir'] : '' ?>" disabled required>
-
-                                </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="yki-field">
+                                <label>Tanggal Lahir <span>*</span></label>
+                                <input class="form-control" id="tgl_lahir" name="tgl_lahir" type="text" value="<?= isset($pasien) ? $pasien['tgl_lahir'] : '' ?>" disabled required>
                             </div>
                         </div>
 
-                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-                            <div class="input-block local-forms">
-                                <label class="focus-label">Jenis Kelamin <span class="login-danger">*</span></label>
-
-                                <input class="form-control floating" id="sex_id" name="sex_id" type="text" value="<?= isset($pasien) ? $pasien['sex_id'] : '' ?>" disabled required>
-
+                        <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="yki-field">
+                                <label>Jenis Kelamin <span>*</span></label>
+                                <input class="form-control" id="sex_id" name="sex_id" type="text" value="<?= isset($pasien) ? $pasien['sex_id'] : '' ?>" disabled required>
                             </div>
                         </div>
 
-                        <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12">
-                            <div class="input-block local-forms">
-                                <label class="focus-label">Alamat <span class="login-danger">*</span></label>
-
-                                <input class="form-control floating" id="alamat" name="alamat" type="text" value="<?= isset($pasien) ? $pasien['alamat1'] : '' ?>" disabled required>
-
+                        <div class="col-xl-6 col-lg-4 col-md-12">
+                            <div class="yki-field">
+                                <label>Alamat <span>*</span></label>
+                                <input class="form-control" id="alamat" name="alamat" type="text" value="<?= isset($pasien) ? $pasien['alamat1'] : '' ?>" disabled required>
                             </div>
                         </div>
                     </div>
-                    <div class="row pt-5">
-                        <div class="col-12">
-                            <div class="mailview-header comman-space-flex">
-                                <div class="sender-info comman-flex">
-                                    <div class="send-user send-user-name">
-                                        <h4>Data Registrasi</h4>
-                                    </div>
-                                </div>
-                                <div class="forward-send">
-                                    <a href="javascript" class="btn btn-primary forwrd-btn-biaya">
-                                        <img src="<?= base_url('assets/img/icons/replay-01.svg') ?>" class="me-2" alt="img">Atur Ulang
-                                    </a>
-                                </div>
-                            </div>
+                </div>
+
+                <div class="yki-card mt-3">
+                    <div class="yki-section-head">
+                        <div>
+                            <span class="yki-section-kicker">02</span>
+                            <h4>Data Registrasi</h4>
+                            <p>Pilih pembiayaan terlebih dahulu agar sistem menyesuaikan layanan yang boleh digunakan.</p>
                         </div>
+                        <button type="button" class="btn yki-btn-light forwrd-btn-biaya">
+                            <i class="fas fa-redo-alt me-2"></i>Atur Ulang
+                        </button>
                     </div>
 
-                    <div class="row pt-3">
-                        <!-- <div class="col-md-6"> -->
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
-                            <div class="input-block local-forms text-center">
-                                <label class="my-0  fw-bold">Pembiayaan<span class="login-danger">*</span></label>
+                    <div class="row g-3 pt-2">
+                        <div class="col-xl-5 col-lg-6 col-md-12">
+                            <div class="yki-field">
+                                <label>Pembiayaan <span>*</span></label>
                                 <select name="pembiayaan" id="pembiayaan" class="form-control" required>
-                                    <option value="">-Pilih-</option>
+                                    <option value="">-- Pilih Pembiayaan --</option>
                                     <option value="UMUM">Umum</option>
                                     <option value="PROGRAM">Program</option>
                                 </select>
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <div class="yki-card mt-3">
+                    <div class="yki-section-head yki-section-head-border">
+                        <div>
+                            <span class="yki-section-kicker">03</span>
+                            <h4 id="label_layan">Registrasi Penunjang Rujukan</h4>
+                            <p id="label_layan_desc">Khusus rujukan dari luar. Layanan yang aktif pada tahap awal adalah Papsmear.</p>
+                        </div>
+                        <button type="button" class="btn yki-btn-light forwrd-btn-regist">
+                            <i class="fas fa-redo-alt me-2"></i>Atur Ulang
+                        </button>
+                    </div>
 
-                    <div class="row pt-3">
-                        <!-- <div class="col-6"> -->
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <div class="card-body pt-0">
-                                <div class="settings-form">
-                                    <div class="row pt-2">
-                                        <div class=" comman-space-flex">
-                                            <div class="sender-info comman-flex">
-                                                <div class="send-user send-user-name">
-                                                    <!-- <h4>Poliklinik</h4> -->
-                                                    <h4> <i class="fa fa-edit fa-2x" style="color: #4B0082;" data-bs-toggle="tooltip"></i> &nbsp;<label id="label_layan">Registrasi Penunjang</label></h4>
-                                                </div>
-                                            </div>
-                                            <div class="forward-send">
-                                                <a href="javascript" class="btn btn-primary forwrd-btn-regist">
-                                                    <img src="<?= base_url('assets/img/icons/replay-01.svg') ?>" class="me-2" alt="img">Atur Ulang
-                                                </a>
-                                            </div>
+                    <div class="yki-visit-switch mt-3">
+                        <label class="yki-radio-card active" for="radioPenunjang" id="cardPenunjang">
+                            <input class="form-check-input" type="radio" name="jenis_kunjungan" id="radioPenunjang" value="2" checked>
+                            <span class="yki-radio-icon"><i class="fas fa-vial"></i></span>
+                            <span>
+                                <strong>Pemeriksaan Penunjang</strong>
+                                <small>Rujukan luar, tampil Papsmear jika pembiayaan UMUM.</small>
+                            </span>
+                        </label>
+
+                        <label class="yki-radio-card" for="radioPoli" id="cardPoli">
+                            <input class="form-check-input" type="radio" name="jenis_kunjungan" id="radioPoli" value="1">
+                            <span class="yki-radio-icon"><i class="fas fa-user-md"></i></span>
+                            <span>
+                                <strong>Kunjungan ke Poliklinik</strong>
+                                <small>Pilih poli, dokter, jam slot, dan validasi riwayat layanan pasien.</small>
+                            </span>
+                        </label>
+                    </div>
+
+                    <fieldset id="fieldsetPenunjang" class="yki-fieldset mt-4">
+                        <legend>Data Pemeriksaan Penunjang Rujukan</legend>
+
+                        <div id="penunjangAlert" class="yki-alert-info mb-3">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Pilih pembiayaan <b>UMUM</b> agar layanan Papsmear (Rujukan) dapat ditampilkan.</span>
+                        </div>
+
+                        <input type="hidden" id="chkLab" value="1">
+
+                        <div id="labContainer">
+                            <div class="yki-mini-head">
+                                <div>
+                                    <strong>Laboratorium</strong>
+                                    <small>Pelayanan khusus rujukan dari luar</small>
+                                </div>
+                                <span class="yki-pill">Papsmear Rujukan</span>
+                            </div>
+
+                            <div id="labItemsList">
+                                <div class="row g-3 align-items-end yki-item-row mb-2">
+                                    <div class="col-xl-7 col-lg-7 col-md-12">
+                                        <div class="yki-field mb-0">
+                                            <label>Pelayanan Laboratorium <span>*</span></label>
+                                            <select class="form-control lab-item" name="lab_item[]">
+                                                <option value="">-- Pilih Pemeriksaan --</option>
+                                                <?php foreach ($lab_items as $lab) : ?>
+                                                    <option value="<?= html_escape($lab['layan_id']) ?>" data-hargalab="<?= number_format((float) $lab['harga'], 0, ',', '.') ?>">
+                                                        <?= html_escape($lab['nama_pemeriksaan']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
                                         </div>
-
                                     </div>
-                                    <hr class="pb-4" style="border-top: 2px solid #6a0dad; opacity: 1;">
-
-                                    <div class="row ps-4">
-                                        <!-- <div class="col-md-7"> -->
-                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                            <div class="input-block">
-                                                <label class="gen-label fw-bold">Jenis Kunjungan<span class="login-danger">*</span></label>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="jenis_kunjungan" id="radioPenunjang" value="2" checked>
-                                                    <label class="form-check-label" for="radioPenunjang">Pemeriksaan Penunjang</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="jenis_kunjungan" id="radioPoli" value="1">
-                                                    <label class="form-check-label" for="radioPoli">Kunjungan ke Poliklinik</label>
-                                                </div>
-
-                                            </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-4">
+                                        <div class="yki-price-box harga-labelLab">Rp 0</div>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-4">
+                                        <div class="yki-field mb-0">
+                                            <label>Qty</label>
+                                            <input type="number" class="form-control" name="lab_qty[]" min="1" value="1">
                                         </div>
                                     </div>
-
-                                    <!-- Fieldset Penunjang -->
-                                    <fieldset id="fieldsetPenunjang" class="border p-3 mt-3 mb-5 rounded bg-light">
-                                        <legend class="fw-bold text-primary">Data Pemeriksaan Penunjang</legend>
-
-                                        <div class="row pt-4 mb-3">
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="chkLab">
-                                                    <label class="form-check-label fw-bold" for="chkLab">Laboratorium</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="chkRad">
-                                                    <label class="form-check-label fw-bold" for="chkRad">Radiologi</label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Laboratorium -->
-                                        <div id="labContainer" style="display:none;">
-                                            <h6 class="fw-bold text-secondary">Pemeriksaan Laboratorium</h6>
-                                            <div id="labItemsList">
-                                                <div class="row g-2 align-items-center mb-2">
-                                                    <div class="col-md-6">
-                                                        <select class="form-select lab-item" name="lab_item[]">
-                                                            <option value="">-- Pilih Pemeriksaan --</option>
-                                                            <?php foreach ($lab_items as $lab) : ?>
-                                                                <!-- <option value="<?= $lab['layan_id'] ?>"><?= $lab['nama_pemeriksaan'] ?></option> -->
-                                                                <option value="<?= $lab['layan_id'] ?>" data-hargalab="<?= number_format($lab['harga'], 0, ',', '.') ?>">
-                                                                    <?= $lab['nama_pemeriksaan'] ?>
-                                                                </option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        <span class="harga-labelLab text-muted">Rp 0</span>
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control" name="lab_qty[]" placeholder="Qty" min="1" value="1">
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        <button type="button" class="btn btn-success btn-sm addLabItem"><i class="fa fa-plus"></i></button>
-                                                        <!-- <button type="button" class="btn btn-danger btn-sm removeItem"><i class="fa fa-trash"></i></button> -->
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Radiologi -->
-                                        <div id="radContainer" style="display:none;" class="mt-4">
-                                            <h6 class="fw-bold text-secondary">Pemeriksaan Radiologi</h6>
-                                            <div id="radItemsList">
-                                                <div class="row g-2 align-items-center mb-2">
-                                                    <div class="col-md-6">
-                                                        <select class="form-select rad-item" name="rad_item[]">
-                                                            <option value="">-- Pilih Pemeriksaan --</option>
-                                                            <?php foreach ($rad_items as $r) : ?>
-                                                                <option value="<?= $r['layan_id'] ?>" data-hargarad="<?= number_format($r['harga'], 0, ',', '.') ?>">
-                                                                    <?= $r['nama_pemeriksaan'] ?>
-                                                                </option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <span class="harga-labelRad text-muted">Rp 0</span>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="number" class="form-control" name="rad_qty[]" placeholder="Qty" min="1" value="1">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <button type="button" class="btn btn-success btn-sm addRadItem"><i class="fa fa-plus"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-
-                                    <!-- Fieldset Poliklinik -->
-                                    <fieldset id="fieldsetPoli" class="border p-3 mt-3 mb-5 rounded bg-light" style="display:none;">
-                                        <legend class="fw-bold text-primary">Data Poliklinik</legend>
-                                        <div class="row pt-4">
-                                            <div class="col-12">
-                                                <div class="input-block local-forms cal-icon">
-                                                    <label class="focus-label fw-bold">Tgl. Berobat<span class="text-danger">*</span></label>
-                                                    <input type="text" id="tgl_berobat" name="tgl_berobat" class="form-control floating" value="<?= date('d/m/Y') ?>" min="<?= date('d/m/Y') ?>" readonly required>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="input-block local-forms text-center">
-                                                    <label class="my-0  fw-bold" id="label_poli">Pilih Poliklinik <span class="login-danger">*</span></label>
-                                                    <select name="poli" id="poli" class="form-control select2">
-                                                        <option value="">-- Pilih Poliklinik --</option>
-
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12">
-                                                <div class="input-block local-forms text-center">
-                                                    <label class="my-0  fw-bold" id="label_poli">Pilih Dokter <span class="login-danger">*</span></label>
-                                                    <select name="dokter" id="dokter" class="form-control select2">
-                                                        <option value="">-- Pilih Dokter --</option>
-
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12">
-                                                <div class="input-block local-forms text-center">
-                                                    <label class="my-0  fw-bold" id="label_poli">Pilih Jam Slot <span class="login-danger">*</span></label>
-                                                    <select name="jam_slot" id="jam_slot" class="form-control select2">
-                                                        <option value="">-- Pilih Jam Slot --</option>
-
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </fieldset>
+                                    <div class="col-xl-1 col-lg-1 col-md-4">
+                                        <button type="button" class="btn yki-btn-add addLabItem" title="Tambah item"><i class="fas fa-plus"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
+
+                    <fieldset id="fieldsetPoli" class="yki-fieldset mt-4" style="display:none;">
+                        <legend>Data Kunjungan Poliklinik</legend>
+                        <div class="row g-3">
+                            <div class="col-xl-7 col-lg-7 col-md-12">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="yki-field">
+                                            <label>Tgl. Berobat <span>*</span></label>
+                                            <input type="text" id="tgl_berobat" name="tgl_berobat" class="form-control" value="<?= date('d/m/Y') ?>" readonly required>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="yki-field">
+                                            <label>Pilih Poliklinik <span>*</span></label>
+                                            <select name="poli" id="poli" class="form-control select2">
+                                                <option value="">-- Pilih Poliklinik --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="yki-field">
+                                            <label>Pilih Dokter <span>*</span></label>
+                                            <select name="dokter" id="dokter" class="form-control select2">
+                                                <option value="">-- Pilih Dokter --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="yki-field">
+                                            <label>Pilih Jam Slot <span>*</span></label>
+                                            <select name="jam_slot" id="jam_slot" class="form-control select2">
+                                                <option value="">-- Pilih Jam Slot --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-5 col-lg-5 col-md-12">
+                                <div class="yki-history-card">
+                                    <div class="yki-history-head">
+                                        <div>
+                                            <strong>History Layanan Pasien</strong>
+                                            <small>Validasi sebelum memakai provider Program</small>
+                                        </div>
+                                        <button type="button" class="btn yki-btn-refresh" id="btnRefreshHistory" title="Refresh history">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </div>
+                                    <div id="historyLayananPasien" class="yki-history-body">
+                                        <div class="yki-empty-state">
+                                            <i class="fas fa-file-medical-alt"></i>
+                                            <p>Pilih pasien untuk melihat riwayat layanan sebelumnya.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
-            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4">
-                <div class="card sticky-sidebar">
-                    <div class="card-body">
-                        <button type="submit" id="btnRegistPasien" class="btn btn-primary w-100 mb-2">Simpan</button>
-                        <button id="btnCancelPasien" class="btn btn-secondary w-100">Batal</button>
-                        <hr>
-                        <div>
-                            <h2 class="text-xs font-bold uppercase tracking-wider">Isian</h2>
-                            <input type="checkbox" id="status_1" class="check">
-                        </div>
+
+            <div class="col-xl-2 col-lg-3 col-md-4">
+                <div class="yki-sticky-actions">
+                    <button type="submit" id="btnRegistPasien" class="btn yki-btn-primary w-100 mb-2">
+                        <i class="fas fa-save me-2"></i>Simpan
+                    </button>
+                    <button type="button" id="btnCancelPasien" class="btn yki-btn-secondary w-100">
+                        <i class="fas fa-times me-2"></i>Batal
+                    </button>
+                    <hr>
+                    <div class="yki-summary-box">
+                        <span>Status Isian</span>
+                        <strong id="statusIsianText">Belum lengkap</strong>
+                        <div class="yki-progress mt-2"><span id="statusIsianBar" style="width:0%"></span></div>
+                    </div>
+                    <div class="yki-summary-note mt-3">
+                        <i class="fas fa-shield-alt"></i>
+                        <p>Pastikan pembiayaan dan jenis kunjungan sudah sesuai alur baru sebelum disimpan.</p>
                     </div>
                 </div>
             </div>

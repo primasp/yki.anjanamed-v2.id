@@ -72,7 +72,6 @@ class ValObatController extends CI_Controller
         $ip       = $_SERVER['REMOTE_ADDR'];
         $gudangid = 'DEPO00000000APT';
 
-        $data['LOKASI_ID']   = $this->session->userdata('lokasi_id_pc') ?: '001';
         $data['EPISODE_ID']  = $this->input->post("episodeid");
         $data['PASIEN_ID']   = $this->input->post("pasienid");
         $data['TRANS_ID']    = $this->input->post("transid");
@@ -80,7 +79,6 @@ class ValObatController extends CI_Controller
         $data['TANGGAL']     = date('Y-m-d', strtotime($this->input->post("tglresep")));
         $data['RESEP_KE']    = $this->input->post("resepke");
         $data['TOTAL_HARGA'] = $this->input->post("totharga");
-        $data['CREATED_BY']  = $this->session->userdata('user_id_pc') ?: $this->session->userdata('user_id') ?: 'SYSTEM';
 
         try {
             if (empty($data['EPISODE_ID']) || empty($data['PASIEN_ID'])) {
@@ -88,14 +86,10 @@ class ValObatController extends CI_Controller
                     ->set_output(json_encode(["Responcode" => "01", "Responhead" => "error", "Respondesc" => "Input tidak valid"]));
             }
 
-            $dbTransOpen = false;
             $gettransvalid = $this->om->gettransvalid();
             $transvalid    = $gettransvalid->trans_valid_id ?? null;
 
-            $this->db->trans_begin();
-            $dbTransOpen = true;
-
-            // simpan detail validasi farmasi
+            // simpan detail
             $obatArray = $this->input->post("dataObat");
             if (!empty($obatArray)) {
                 foreach ($obatArray as $obat) {
@@ -120,9 +114,7 @@ class ValObatController extends CI_Controller
                         'SIGNA_ID'     => $obat['signaid'] ?? '',
                         'NAMA_RACIKAN' => $obat['namaracikan'] ?? ''
                     ];
-                    if (!$this->om->simpanresepit($data, $obatData, $transvalid, $ip, $gudangid)) {
-                        throw new Exception('Gagal menyimpan detail validasi obat.');
-                    }
+                    $this->om->simpanresepit($data, $obatData, $transvalid, $ip, $gudangid);
                 }
             }
 
@@ -133,26 +125,6 @@ class ValObatController extends CI_Controller
             }
 
             $kunjunganData  = $this->dm->getDtlKrmKunjungan($data['EPISODE_ID']);
-
-            // Sinkron billing obat setelah resep berhasil divalidasi.
-            // Untuk pasien UMUM akan dibuat:
-            // - pc01_keu_transaksi_hd jenis_tr = 006, bayar_id NULL
-            // - pc01_keu_transfrm_it sebagai detail obat
-            $data['REKANAN_ID'] = $kunjunganData['rekanan_id'] ?? null;
-            $data['POLI_ID']    = $kunjunganData['poli_id'] ?? null;
-            $data['DOKTER_ID']  = $kunjunganData['dokter_id'] ?? null;
-            $billingObatResult  = $this->om->sinkronValidasiObatKeBilling($data, $obatArray, $transvalid, $gudangid);
-
-            if (empty($billingObatResult['success'])) {
-                throw new Exception($billingObatResult['message'] ?? 'Gagal sinkron obat ke billing kasir.');
-            }
-
-            if ($this->db->trans_status() === false) {
-                throw new Exception('Transaksi database validasi obat gagal.');
-            }
-
-            $this->db->trans_commit();
-            $dbTransOpen = false;
 
 
             if (isset($kunjunganData['rekanan_id']) && strtoupper($kunjunganData['rekanan_id']) === 'BPJS') {
@@ -313,16 +285,8 @@ class ValObatController extends CI_Controller
                 ];
             }
 
-            if (isset($billingObatResult)) {
-                $json['BillingObatResult'] = $billingObatResult;
-            }
-
             echo json_encode($json);
         } catch (Throwable $e) {
-            if (isset($dbTransOpen) && $dbTransOpen) {
-                $this->db->trans_rollback();
-            }
-
             echo json_encode([
                 "Responcode" => "01",
                 "Responhead" => "error",
@@ -402,9 +366,7 @@ class ValObatController extends CI_Controller
                         'NAMA_RACIKAN' => $obat['namaracikan']
                     ];
 
-                    if (!$this->om->simpanresepit($data, $obatData, $transvalid, $ip, $gudangid)) {
-                        throw new Exception('Gagal menyimpan detail validasi obat.');
-                    }
+                    $this->om->simpanresepit($data, $obatData, $transvalid, $ip, $gudangid);
                 }
             }
 

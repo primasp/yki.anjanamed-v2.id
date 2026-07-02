@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  console.log("Asessment JS loaded - alur baru YKI");
+  console.log("Asessment JS loaded");
 
   $(".select2").select2({
     // placeholder: "-- Pilih Propinsi --", // Placeholder saat belum ada pilihan
@@ -30,23 +30,6 @@ $(document).ready(function () {
   let mnt = String(now.getMinutes()).padStart(2, "0");
 
   let label = `${tgl}/${bln}/${thn} • ${jam}:${mnt}`;
-
-  // =====================================================
-  // ALUR BARU YKI
-  // Menu asesmen perawat hanya menampilkan POLIKLINIK.
-  // Penunjang Lab/Radiologi tidak lagi diarahkan dari worklist ini.
-  // =====================================================
-  function showAssessmentInfo(message) {
-    if (typeof Swal !== "undefined") {
-      Swal.fire({
-        icon: "info",
-        title: "Informasi Alur Baru",
-        text: message,
-      });
-    } else {
-      alert(message);
-    }
-  }
 
   // fungsi untuk menampilkan filter poli/dokter jika POLIKLINIK dipilih
 
@@ -149,11 +132,47 @@ $(document).ready(function () {
     window.open(url, "_blank");
   });
 
-  $(document).on("click", ".btnAsesmenLayanan, .btnEditLayanan", function (e) {
-    e.preventDefault();
-    showAssessmentInfo(
-      "Asesmen Lab/Radiologi tidak lagi dibuka dari Asesmen Perawat. Form penunjang akan muncul setelah dokter menentukan pemeriksaan.",
-    );
+  $(document).on("click", ".btnAsesmenLayanan", function () {
+    let episode = $(this).data("episode");
+    let pasien = $(this).data("pasien");
+    let layanan = $(this).data("layanan");
+
+    if (layanan === "JKL-RAD") {
+      window.location.href =
+        BASE_URL +
+        "AsessmentController/formAssessmentRad/" +
+        episode +
+        "/" +
+        pasien;
+    }
+
+    if (layanan === "JKL-LAB") {
+      window.location.href =
+        BASE_URL +
+        "AsessmentController/formAssessmentLab/" +
+        episode +
+        "/" +
+        pasien;
+    }
+  });
+
+  // =========================
+  // EDIT (SUDAH)
+  // =========================
+  $(document).on("click", ".btnEditLayanan", function () {
+    let episode = $(this).data("episode");
+    let pasien = $(this).data("pasien");
+    let layanan = $(this).data("layanan");
+
+    if (layanan === "JKL-RAD") {
+      window.location.href =
+        BASE_URL + "AsessmentController/editAssesRad/" + episode + "/" + pasien;
+    }
+
+    if (layanan === "JKL-LAB") {
+      window.location.href =
+        BASE_URL + "AsessmentController/editAssesLab/" + episode + "/" + pasien;
+    }
   });
 
   $(document).on("click", ".btnMulaiAsesmen", function () {
@@ -168,7 +187,7 @@ $(document).ready(function () {
 
     Swal.fire({
       title: "Mulai Asesmen?",
-      text: "Sistem akan membuka Form Pengkajian Awal sesuai alur baru.",
+      text: "Sistem akan membuka form asesmen sesuai jenis layanan.",
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Ya, lanjutkan",
@@ -2402,21 +2421,48 @@ $(document).ready(function () {
   if (perawatTgljam) perawatTgljam.value = label;
 
   $(document).on("click", ".btnEditAsesmen", function () {
-    const episode = $(this).data("episode");
-    const pasien = $(this).data("pasien");
-    const poli = $(this).data("poli");
-    const jml_kunj = $(this).data("kunj");
-
-    if (!episode || !pasien || !poli) {
+    let episode = $(this).data("episode");
+    let pasien = $(this).data("pasien");
+    let poli = $(this).data("poli");
+    let layan = $(this).data("layanan"); // array layanan APS
+    let jml_kunj = $(this).data("kunj");
+    // kategori_id;
+    // POLI APS → tentukan jenis pemeriksaan
+    if (poli === "APS") {
+      // console.log(layan);
+      // alert(layan.length);
+      if (layan && layan.length > 0) {
+        for (let i = 0; i < layan.length; i++) {
+          let id = layan[i].kategori_id;
+          // alert(id);
+          if (id === "JKL-LAB") {
+            window.location.href =
+              BASE_URL +
+              `AsessmentController/editAssesLab/${episode}/${pasien}`;
+            return;
+          }
+          if (id === "JKL-RAD") {
+            window.location.href =
+              BASE_URL +
+              `AsessmentController/editAssesRad/${episode}/${pasien}`;
+            return;
+          }
+          if (id === "TDK000000000002") {
+            window.location.href =
+              BASE_URL +
+              `AsessmentController/editMammoUsg/${episode}/${pasien}?jenis=usg`;
+            return;
+          }
+        }
+      }
       Swal.fire({
         icon: "warning",
-        title: "Data tidak lengkap",
-        text: "Episode, pasien, atau poli tidak ditemukan.",
+        text: "Tidak ditemukan tipe pemeriksaan APS.",
       });
       return;
     }
 
-    // ALUR BARU: hanya edit pengkajian awal. Tidak ada lagi edit asesmen Lab/Rad dari menu perawat.
+    // POLI BIASA → kembali ke Form Pengkajian Awal
     window.location.href =
       BASE_URL +
       `AsessmentController/editPengkajianAwal/${episode}/${pasien}/${jml_kunj}/${poli}`;
