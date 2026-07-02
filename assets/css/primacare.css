@@ -1,0 +1,256 @@
+/* ===============================
+   MODAL PALIATIF
+================================ */
+
+#modalPaliatif .exam-row {
+    display: grid !important;
+    grid-template-columns: 180px 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#modalPaliatif .exam-row label {
+    margin-bottom: 0;
+}
+
+#modalPaliatif .draw-box {
+    border: 1px solid #adb5bd;
+    border-radius: 4px;
+    background: #fff;
+}
+
+#modalPaliatif .canvas-wrap {
+    text-align: center;
+}
+
+#modalPaliatif .canvas-wrap small {
+    display: block;
+    margin-top: 4px;
+    color: #6c757d;
+}
+
+
+
+
+
+.exam-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.exam-row label {
+    margin-bottom: 0;
+}
+
+.draw-box {
+    border: 1px solid #adb5bd;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.canvas-wrap {
+    text-align: center;
+}
+
+.canvas-wrap small {
+    display: block;
+    margin-top: 4px;
+    color: #6c757d;
+}
+
+.telemed-banner {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  max-width: 1544px;
+  overflow: hidden;
+  margin: auto;
+}
+
+/* position: absolute dan transform: translateX(-50%) memastikan gambar selalu centered secara horizontal. */
+.telemed-full-img {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+}
+
+
+.form-group-x {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Jarak antara label dan input */
+}
+.form-group-x label {
+  width: 150px; /* Lebar label seragam */
+  text-align: right; /* Rata kanan agar sejajar */
+}
+.form-group-x input {
+  flex-grow: 1; /* Agar input field menyesuaikan sisa ruang */
+  border: none;
+  border-bottom: 1px solid #000;
+  border-radius: 0;
+}
+
+
+
+#patientList .patient-item:hover .patient-name,
+#patientList .patient-item:hover .chat-user-time p {
+    color: white !important;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+
+  /* Mengatur tampilan dropdown autocomplete */
+  .ui-autocomplete {
+    max-height: 150px; /* Batasi tinggi agar tidak terlalu besar */
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: white;
+    border: 1px solid #ccc;
+    font-family: Arial, sans-serif;
+    font-size: 12px; /* Ukuran font lebih kecil */
+    border-radius: 5px;
+    position: absolute !important; /* Agar menutupi inputan di bawah */
+    z-index: 9999; /* Pastikan tampil di atas elemen lain */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Styling untuk setiap item dalam dropdown */
+  .ui-menu-item {
+    padding: 6px 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Warna hover untuk setiap item */
+  .ui-menu-item:hover {
+    background-color: #f0f0f0;
+  }
+
+  /* Styling untuk teks nama pasien */
+  .autocomplete-item .name {
+    font-weight: bold;
+    color: #333;
+  }
+
+  /* Styling untuk teks tanggal lahir */
+  .autocomplete-item .detail {
+    font-size: 10px;
+    color: gray;
+  }
+
+
+
+
+
+
+.sticky-sidebar {
+    position: sticky; /* Menempel di posisi saat scroll */
+    top: 80px; /* Jarak dari atas halaman */
+    z-index: 10; /* Pastikan di atas elemen lainnya */
+}
+
+.vertical-line {
+    /* width: 15px; */
+    border-left: 3px dashed #ccc; /* Garis vertikal abu-abu dengan gaya putus-putus */
+    height: 90%; /* Sesuaikan tinggi dengan kontainer */
+    width: 0;
+}
+
+.select2-selection__clear {
+    display: none !important;
+}
+
+.blinking {
+    animation: blinkingText 1.5s infinite;
+}
+
+@keyframes blinkingText {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.readonly-style[readonly] {
+    background-color: #f5f5f5; /* Warna abu-abu terang */
+    border: 1px solid #ddd; /* Border halus */
+    color: #6c757d; /* Teks dengan warna redup */
+    cursor: not-allowed; /* Cursor menunjukkan tidak bisa diedit */
+}
+
+
+
+.loading-box {
+    text-align: center;
+    font-size: 14px;
+    color: #374151;
+}
+
+
+
+
+
+    .rad-sortable {
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+    }
+
+    .rad-sortable:hover {
+        color: #4b2bbf;
+        background: #f4f1ff;
+    }
+
+    #tblRadDoctor tbody tr {
+        vertical-align: middle;
+        transition: background .15s ease, box-shadow .15s ease;
+    }
+
+    #tblRadDoctor tbody tr:hover {
+        background: #faf8ff;
+    }
+
+    #tblRadDoctor .badge {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 11px;
+        letter-spacing: .3px;
+    }
+
+    #tblRadDoctor td {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .rad-patient-name {
+        font-weight: 700;
+        color: #25213b;
+    }
+
+    .rad-meta {
+        font-size: 12px;
+        color: #6c7280;
+    }
+
+    .rad-print-paper {
+        max-width: 82px;
+    }

@@ -1,0 +1,220 @@
+.page {
+    font-family: helvetica;
+    font-size: 8.8px;
+    color: #111;
+    line-height: 1.2;
+}
+
+.header-table {
+    width: 100%;
+    padding-bottom: 2px;
+}
+
+.logo-cell {
+    text-align: left;
+    vertical-align: middle;
+    padding-left: 4px;
+}
+
+.title-cell {
+    text-align: left;
+    vertical-align: middle;
+    padding-left: 4px;
+}
+
+
+
+.header-main {
+    width: 100%;
+}
+
+.header-logo {
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 3px;;
+}
+
+.header-title {
+    text-align: left;
+    vertical-align: middle;
+    padding-left: 4px;
+}
+
+.header-date {
+    text-align: right;
+    vertical-align: top;
+}
+
+.date-table {
+    border: 0.8px solid #222;
+}
+.date-box-title {
+    font-size: 7.5px;
+    text-align: center;
+    height: 15px;
+    line-height: 1.1;
+    border-bottom: 0.8px solid #222;
+}
+.date-box-value {
+    font-size: 7.8px;
+    text-align: center;
+    height: 17px;
+    line-height: 1.1;
+}
+.header-address {
+    text-align: left;
+    font-size: 7.5px;
+    line-height: 1.15;
+    padding-top: 3px;
+}
+
+.brand-title {
+    font-size: 10.8px;
+    font-weight: bold;
+    line-height: 1.25;
+    text-align: left;
+}
+
+.addr-row {
+    text-align: center;
+    padding-top: 2px;
+}
+
+.addr {
+    font-size: 7.5px;
+    line-height: 1.15;
+    text-align: center;
+}
+
+.date-box {
+    border: 0.8px solid #222;
+    font-size: 7.8px;
+    text-align: center;
+    height: 18px;
+    padding: 2px;
+    line-height: 1.1;
+}
+
+.main-title {
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    border-top: 0.8px solid #111;
+    border-bottom: 0.8px solid #111;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    line-height: 1.2;
+}
+
+/* IDENTITAS */
+.identity-wrap td {
+    vertical-align: top;
+}
+
+.identity-table td {
+    font-size: 8.9px;
+    vertical-align: top;
+    line-height: 1.45;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.meta-label {
+    width: 110px;
+    font-weight: bold;
+}
+
+.meta-colon {
+    width: 10px;
+    text-align: center;
+}
+
+.meta-value {
+    border-bottom: none;
+}
+
+.sitologi-box {
+    border: 0.8px solid #222;
+    text-align: center;
+    font-size: 7.9px;
+    padding: 3px;
+    line-height: 1.12;
+}
+
+/* HASIL */
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+.result-table td {
+    font-size: 8.8px;
+    vertical-align: top;
+    line-height: 1.35;
+   padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+
+.result-label {
+    font-weight: bold;
+    padding-right: 6px;
+}
+
+.result-colon {
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+
+.result-answer {
+    text-align: left;
+    padding-left: 0;
+}
+
+.result-gap td {
+    font-size: 1px;
+    line-height: 1px;
+}
+
+.answer-item {
+    margin: 0 0 3px 0;
+    padding: 0;
+}
+
+/* FOOTER */
+.footer-table {
+    margin-top: 0;
+}
+
+.footer-table td {
+    font-size: 7.6px;
+    vertical-align: top;
+    line-height: 1.15;
+}
+
+.sign-box {
+    border: 0.8px solid #333;
+    width: 150px;
+    height: 34px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 7.8px;
+    line-height: 1.25;
+}
+
+.doctor-name {
+    text-align: center;
+    font-size: 8px;
+    font-weight: bold;
+    border-bottom: 0.5px dotted #333;
+    padding-top: 8px;
+}
+
+.note {
+    font-size: 7.2px;
+    color: #555;
+    line-height: 1.15;
+}

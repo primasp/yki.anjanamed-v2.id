@@ -1,0 +1,31 @@
+/* ===============================
+   MODAL PALIATIF
+================================ */
+
+#modalPaliatif .exam-row {
+    display: grid !important;
+    grid-template-columns: 180px 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#modalPaliatif .exam-row label {
+    margin-bottom: 0;
+}
+
+#modalPaliatif .draw-box {
+    border: 1px solid #adb5bd;
+    border-radius: 4px;
+    background: #fff;
+}
+
+#modalPaliatif .canvas-wrap {
+    text-align: center;
+}
+
+#modalPaliatif .canvas-wrap small {
+    display: block;
+    margin-top: 4px;
+    color: #6c757d;
+}

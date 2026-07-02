@@ -1,0 +1,206 @@
+.stock-summary-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.stock-summary-card .summary-label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.stock-summary-card .summary-value {
+    font-size: 26px;
+    font-weight: 900;
+    color: #0f172a;
+    margin-top: 4px;
+}
+
+.stock-summary-card.danger {
+    border-color: #fecaca;
+    background: #fff7f7;
+}
+
+.stock-summary-card.danger .summary-value {
+    color: #dc2626;
+}
+
+.stock-summary-card.warning {
+    border-color: #fde68a;
+    background: #fffbeb;
+}
+
+.stock-summary-card.warning .summary-value {
+    color: #d97706;
+}
+
+.stock-summary-card.info {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+}
+
+.stock-summary-card.info .summary-value {
+    color: #2563eb;
+}
+
+.obat-filter-card {
+    border-radius: 18px;
+}
+
+.obat-tabs .nav-link {
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 13px;
+    margin-right: 8px;
+}
+
+.obat-tabs .nav-link.active {
+    background: #4f46e5;
+    color: #fff;
+}
+
+.table-modern thead th {
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+
+.table-modern tbody td {
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.row-stock-minus td {
+    background: #fff1f2 !important;
+}
+
+.adjust-card {
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+}
+
+.adjust-label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.adjust-value {
+    font-size: 24px;
+    font-weight: 900;
+}
+
+
+
+/* MODAL EDIT OBAT */
+.obat-edit-dialog {
+    max-width: 980px;
+    margin: 1rem auto;
+}
+
+.obat-edit-modal {
+    border: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
+}
+
+.obat-edit-modal .modal-header {
+    background: linear-gradient(135deg, #4f46e5, #2563eb);
+    color: #fff;
+    padding: 16px 20px;
+}
+
+.obat-edit-modal .modal-title {
+    font-size: 16px;
+}
+
+.obat-edit-modal .btn-close {
+    filter: invert(1);
+    opacity: .9;
+}
+
+.obat-edit-modal .modal-body {
+    max-height: calc(100vh - 170px);
+    overflow-y: auto !important;
+    padding: 18px 20px;
+    background: #f8fafc;
+}
+
+.obat-edit-modal .modal-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+    padding: 12px 20px;
+}
+
+.obat-edit-section {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.obat-edit-section-title {
+    font-weight: 800;
+    font-size: 13px;
+    color: #1e293b;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.obat-edit-section-title i {
+    color: #4f46e5;
+}
+
+.obat-edit-modal .form-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 5px;
+}
+
+.obat-edit-modal .form-control,
+.obat-edit-modal .form-select {
+    border-radius: 10px;
+    border-color: #dbe3ef;
+    min-height: 36px;
+}
+
+.obat-edit-modal .form-control:focus,
+.obat-edit-modal .form-select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 .15rem rgba(99, 102, 241, .15);
+}
+
+.obat-edit-price-card {
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 14px;
+    padding: 12px;
+}
+
+.obat-edit-checks {
+    background: #fff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 14px;
+    padding: 12px;
+}
